@@ -1,5 +1,12 @@
 [
   {
+    "username": "admin",
+    "name": "Administrador General",
+    "passwordHash": "6af8b3276211c4a0357d126ce686dbe6619af4ca2b8bfb4d52d7df2e42711197",
+    "active": true,
+    "role": "gerente_operaciones"
+  },
+  {
     "username": "JLEMUS",
     "name": "José Lemus",
     "passwordHash": "e69bebcdd5982f494255c45aa9c897f3cbfdff523de3518e315b5b125537c7c4",
