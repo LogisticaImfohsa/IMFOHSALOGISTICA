@@ -1,9 +1,9 @@
 LOGÍSTICA IMFOHSA R7.7.6 PILOTO
 
 RED LOCAL - MISMA WIFI:
-http://192.168.2.158:8981/index.html?v=776
+http://192.168.2.158:8946/index.html?v=776
 (Funciona únicamente dentro de la misma red local.)
 
 HTTPS PUBLICO - CUALQUIER RED:
-https://victorian-per-optics-pentium.trycloudflare.com/index.html?v=776
+https://brought-concentrate-wagon-tenant.trycloudflare.com/index.html?v=776
 (Enlace verificado antes de ser publicado.)

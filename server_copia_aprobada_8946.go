@@ -186,6 +186,7 @@ func main() {
 	mux.HandleFunc("/api/logout", s.logout)
 	mux.HandleFunc("/api/me", s.me)
 	mux.HandleFunc("/api/state", s.stateHandler)
+	mux.HandleFunc("/api/panel-request/assign-vehicle", s.assignPanelRequestVehicle)
 	mux.HandleFunc("/api/order/unassign", s.unassignOrderHandler)
 	mux.HandleFunc("/api/order/delete", s.deleteOrderHandler)
 	mux.HandleFunc("/api/events", s.events)
@@ -725,7 +726,60 @@ func sval(v interface{}) string {
 	}
 	return x
 }
+func (s *Server) normalizePanelAssignmentsLocked() {
+	requests, _ := s.state["panelRequests"].([]interface{})
+	assignments, _ := s.state["panelAssignments"].([]interface{})
+	requestByID := map[string]map[string]interface{}{}
+	for _, raw := range requests {
+		if r, ok := raw.(map[string]interface{}); ok {
+			requestByID[strings.TrimSpace(fmt.Sprint(r["id"]))] = r
+		}
+	}
+	keepers := map[string]map[string]interface{}{}
+	for _, raw := range assignments {
+		a, ok := raw.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		rid := strings.TrimSpace(fmt.Sprint(a["requestId"]))
+		if rid == "" || rid == "<nil>" {
+			continue
+		}
+		r := requestByID[rid]
+		requestStatus := strings.ToLower(strings.TrimSpace(fmt.Sprint(r["status"])))
+		if strings.Contains(requestStatus, "rechaz") || strings.Contains(requestStatus, "cancel") {
+			if strings.Contains(requestStatus, "cancel") {
+				a["status"] = "Cancelada"
+			} else {
+				a["status"] = "Rechazada"
+			}
+			continue
+		}
+		status := strings.ToLower(strings.TrimSpace(fmt.Sprint(a["status"])))
+		if strings.Contains(status, "final") || strings.Contains(status, "cancel") || strings.Contains(status, "rechaz") || strings.Contains(status, "cerrad") || strings.Contains(status, "archiv") {
+			continue
+		}
+		key := rid
+		if idx, exists := a["requestItemIndex"]; exists && fmt.Sprint(idx) != "<nil>" {
+			key += ":" + fmt.Sprint(idx)
+		}
+		current := keepers[key]
+		preferred := r != nil && (fmt.Sprint(r["assignmentId"]) == fmt.Sprint(a["id"]) || fmt.Sprint(r["vehicleId"]) == fmt.Sprint(a["vehicleId"]))
+		if current == nil || preferred || fmt.Sprint(a["id"]) > fmt.Sprint(current["id"]) {
+			if current != nil {
+				current["status"] = "Archivada"
+				current["archivedReason"] = "Asignación sustituida"
+			}
+			keepers[key] = a
+		} else {
+			a["status"] = "Archivada"
+			a["archivedReason"] = "Asignación sustituida"
+		}
+	}
+}
+
 func (s *Server) saveLocked() error {
+	s.normalizePanelAssignmentsLocked()
 	s.version++
 	s.state["version"] = s.version
 	b, _ := json.MarshalIndent(s.state, "", "  ")
@@ -1824,6 +1878,218 @@ func (s *Server) me(w http.ResponseWriter, r *http.Request) {
 	}
 	jsonOut(w, resp)
 }
+func assignmentDateWindow(date, returnDate string) (time.Time, time.Time, error) {
+	if returnDate == "" {
+		returnDate = date
+	}
+	start, err := time.ParseInLocation("2006-01-02 15:04:05", date+" 00:00:00", time.Local)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+	end, err := time.ParseInLocation("2006-01-02 15:04:05", returnDate+" 23:59:59", time.Local)
+	return start, end, err
+}
+
+// assignPanelRequestVehicle is the single authoritative write for changing a
+// vehicle on an ISC weekly request.  Keeping the request item and reservation
+// in the same critical section prevents the two records from diverging.
+func (s *Server) assignPanelRequestVehicle(w http.ResponseWriter, r *http.Request) {
+	user, ok := s.requireAdmin(w, r)
+	if !ok {
+		return
+	}
+	if r.Method != http.MethodPost {
+		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		return
+	}
+	var in struct {
+		RequestID        string `json:"requestId"`
+		RequestItemIndex int    `json:"requestItemIndex"`
+		VehicleID        string `json:"vehicleId"`
+	}
+	if err := bodyJSON(r, &in); err != nil || strings.TrimSpace(in.RequestID) == "" || strings.TrimSpace(in.VehicleID) == "" || in.RequestItemIndex < 0 {
+		http.Error(w, "Datos incompletos para asignar la unidad", http.StatusBadRequest)
+		return
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	requests, _ := s.state["panelRequests"].([]interface{})
+	var request map[string]interface{}
+	for _, raw := range requests {
+		x, _ := raw.(map[string]interface{})
+		if strings.EqualFold(sval(x["id"]), in.RequestID) {
+			request = x
+			break
+		}
+	}
+	if request == nil {
+		http.Error(w, "Solicitud no encontrada", http.StatusNotFound)
+		return
+	}
+	items, _ := request["weeklyItems"].([]interface{})
+	if in.RequestItemIndex >= len(items) {
+		http.Error(w, "Gestión no encontrada dentro de la solicitud", http.StatusNotFound)
+		return
+	}
+	item, _ := items[in.RequestItemIndex].(map[string]interface{})
+	if item == nil {
+		http.Error(w, "Gestión inválida", http.StatusConflict)
+		return
+	}
+
+	vehicles, _ := s.state["vehicles"].([]interface{})
+	var selected map[string]interface{}
+	for _, raw := range vehicles {
+		v, _ := raw.(map[string]interface{})
+		if sval(v["id"]) == in.VehicleID {
+			selected = v
+			break
+		}
+	}
+	if selected == nil {
+		http.Error(w, "Vehículo no encontrado", http.StatusNotFound)
+		return
+	}
+	if strings.Contains(strings.ToLower(sval(selected["manualStatus"])), "mantenimiento") || strings.Contains(strings.ToLower(sval(selected["manualStatus"])), "fuera de servicio") {
+		http.Error(w, "La unidad no está disponible para asignación", http.StatusConflict)
+		return
+	}
+
+	date := sval(item["date"])
+	returnDate := date
+	if strings.EqualFold(sval(item["returnType"]), "Otro día") && sval(item["returnDate"]) != "" {
+		returnDate = sval(item["returnDate"])
+	}
+	wantStart, wantEnd, err := assignmentDateWindow(date, returnDate)
+	if err != nil {
+		http.Error(w, "La gestión no tiene una fecha válida", http.StatusBadRequest)
+		return
+	}
+
+	assignments, _ := s.state["panelAssignments"].([]interface{})
+	var current map[string]interface{}
+	for _, raw := range assignments {
+		a, _ := raw.(map[string]interface{})
+		if strings.EqualFold(sval(a["requestId"]), in.RequestID) && int(numberValue(a["requestItemIndex"])) == in.RequestItemIndex {
+			current = a
+			break
+		}
+	}
+	previousVehicleID := ""
+	if current != nil {
+		previousVehicleID = sval(current["vehicleId"])
+	}
+	for _, raw := range assignments {
+		a, _ := raw.(map[string]interface{})
+		if a == nil || (current != nil && sval(a["id"]) == sval(current["id"])) || sval(a["vehicleId"]) != in.VehicleID {
+			continue
+		}
+		status := strings.ToLower(sval(a["status"]))
+		if strings.Contains(status, "final") || strings.Contains(status, "cancel") || strings.Contains(status, "rechaz") || strings.Contains(status, "cerrad") {
+			continue
+		}
+		otherStart, otherEnd, e := assignmentDateWindow(sval(a["date"]), sval(a["returnDate"]))
+		if e == nil && !wantStart.After(otherEnd) && !wantEnd.Before(otherStart) {
+			w.WriteHeader(http.StatusConflict)
+			jsonOut(w, map[string]interface{}{"ok": false, "error": fmt.Sprintf("La unidad ya está reservada por %s del %s al %s.", sval(a["id"]), sval(a["date"]), func() string {
+				if sval(a["returnDate"]) != "" {
+					return sval(a["returnDate"])
+				}
+				return sval(a["date"])
+			}())})
+			return
+		}
+	}
+
+	if current == nil {
+		current = map[string]interface{}{
+			"id":        fmt.Sprintf("PA-%d-%d", time.Now().UnixMilli(), in.RequestItemIndex+1),
+			"requestId": in.RequestID, "requestItemIndex": in.RequestItemIndex,
+			"token": fmt.Sprintf("%d", time.Now().UnixNano()), "startPhotos": []interface{}{}, "endPhotos": []interface{}{},
+		}
+		assignments = append(assignments, current)
+		s.state["panelAssignments"] = assignments
+	}
+	current["vehicleId"] = in.VehicleID
+	current["date"] = date
+	current["returnDate"] = returnDate
+	current["start"] = "00:00"
+	current["end"] = "23:59"
+	current["destination"] = strings.TrimSpace(sval(item["client"]) + " · " + sval(item["address"]))
+	current["status"] = "Reservada"
+	current["messengerId"] = ""
+	current["updatedAt"] = time.Now().Format(time.RFC3339)
+	current["updatedBy"] = user
+	item["assignedVehicleId"] = in.VehicleID
+	item["assignedVehiclePlate"] = sval(selected["plate"])
+	item["assignmentId"] = sval(current["id"])
+	request["weeklyItems"] = items
+	request["updatedAt"] = time.Now().Format(time.RFC3339)
+	request["updatedBy"] = user
+	// El cambio de unidad es una sola transacción: solicitud, reserva y estado
+	// de ambas unidades deben quedar consistentes antes de publicar la versión.
+	s.recalculateVehicleStatusLocked(previousVehicleID)
+	s.recalculateVehicleStatusLocked(in.VehicleID)
+	if err := s.saveLocked(); err != nil {
+		http.Error(w, "No fue posible guardar la asignación", http.StatusInternalServerError)
+		return
+	}
+	jsonOut(w, map[string]interface{}{"ok": true, "version": s.version, "request": request, "assignment": current})
+}
+
+func (s *Server) recalculateVehicleStatusLocked(vehicleID string) {
+	vehicleID = strings.TrimSpace(vehicleID)
+	if vehicleID == "" {
+		return
+	}
+	vehicles, _ := s.state["vehicles"].([]interface{})
+	var target map[string]interface{}
+	for _, raw := range vehicles {
+		v, _ := raw.(map[string]interface{})
+		if v != nil && sval(v["id"]) == vehicleID {
+			target = v
+			break
+		}
+	}
+	if target == nil {
+		return
+	}
+	manual := strings.ToLower(strings.TrimSpace(sval(target["manualStatus"])))
+	if strings.Contains(manual, "mantenimiento") || strings.Contains(manual, "fuera de servicio") {
+		target["status"] = target["manualStatus"]
+		return
+	}
+	now := time.Now().In(time.FixedZone("America/Guatemala", -6*60*60))
+	today := now.Format("2006-01-02")
+	assignments, _ := s.state["panelAssignments"].([]interface{})
+	activeNow := false
+	for _, raw := range assignments {
+		a, _ := raw.(map[string]interface{})
+		if a == nil || sval(a["vehicleId"]) != vehicleID {
+			continue
+		}
+		status := strings.ToLower(sval(a["status"]))
+		if strings.Contains(status, "final") || strings.Contains(status, "cancel") || strings.Contains(status, "rechaz") || strings.Contains(status, "cerrad") {
+			continue
+		}
+		start, end := sval(a["date"]), sval(a["returnDate"])
+		if end == "" {
+			end = start
+		}
+		if start <= today && today <= end {
+			activeNow = true
+			break
+		}
+	}
+	if activeNow {
+		target["status"] = "En uso"
+	} else {
+		target["status"] = "Disponible"
+		target["assignedTo"] = ""
+	}
+}
+
 func (s *Server) stateHandler(w http.ResponseWriter, r *http.Request) {
 	user, ok := s.requireAdmin(w, r)
 	if !ok {
@@ -2578,12 +2844,18 @@ func parseManualCostsXLSX(data []byte) ([]importedManualCost, error) {
 		name := strings.ToLower(filepath.ToSlash(file.Name))
 		if name == "xl/sharedstrings.xml" {
 			body, readErr := xlsxReadFile(file)
-			if readErr != nil { return nil, readErr }
+			if readErr != nil {
+				return nil, readErr
+			}
 			var stringsFile xlsxSharedStrings
-			if unmarshalErr := xml.Unmarshal(body, &stringsFile); unmarshalErr != nil { return nil, unmarshalErr }
+			if unmarshalErr := xml.Unmarshal(body, &stringsFile); unmarshalErr != nil {
+				return nil, unmarshalErr
+			}
 			for _, item := range stringsFile.Items {
 				text := item.T
-				for _, run := range item.Runs { text += run.T }
+				for _, run := range item.Runs {
+					text += run.T
+				}
 				shared = append(shared, strings.TrimSpace(text))
 			}
 		}
@@ -2591,70 +2863,157 @@ func parseManualCostsXLSX(data []byte) ([]importedManualCost, error) {
 			sheetFile = file
 		}
 	}
-	if sheetFile == nil { return nil, fmt.Errorf("el libro no contiene hojas") }
+	if sheetFile == nil {
+		return nil, fmt.Errorf("el libro no contiene hojas")
+	}
 	body, err := xlsxReadFile(sheetFile)
-	if err != nil { return nil, err }
+	if err != nil {
+		return nil, err
+	}
 	var worksheet xlsxWorksheet
-	if err = xml.Unmarshal(body, &worksheet); err != nil { return nil, fmt.Errorf("no se pudo leer la hoja: %w", err) }
+	if err = xml.Unmarshal(body, &worksheet); err != nil {
+		return nil, fmt.Errorf("no se pudo leer la hoja: %w", err)
+	}
 	rows := make([][]string, 0, len(worksheet.Rows))
 	for _, row := range worksheet.Rows {
 		values, maxCol := map[int]string{}, 0
 		for _, cell := range row.Cells {
 			column := xlsxColumn(cell.Ref)
-			if column < 0 { continue }
+			if column < 0 {
+				continue
+			}
 			value := cell.V
 			if cell.Type == "s" {
-				index, _ := strconv.Atoi(strings.TrimSpace(cell.V)); if index >= 0 && index < len(shared) { value = shared[index] }
-			} else if cell.Type == "inlineStr" { value = cell.IS.T }
-			values[column] = strings.TrimSpace(value); if column > maxCol { maxCol = column }
+				index, _ := strconv.Atoi(strings.TrimSpace(cell.V))
+				if index >= 0 && index < len(shared) {
+					value = shared[index]
+				}
+			} else if cell.Type == "inlineStr" {
+				value = cell.IS.T
+			}
+			values[column] = strings.TrimSpace(value)
+			if column > maxCol {
+				maxCol = column
+			}
 		}
-		line := make([]string, maxCol+1); for column, value := range values { line[column] = value }; rows = append(rows, line)
+		line := make([]string, maxCol+1)
+		for column, value := range values {
+			line[column] = value
+		}
+		rows = append(rows, line)
 	}
-	if len(rows) < 2 { return nil, fmt.Errorf("el Excel no contiene filas de costos") }
+	if len(rows) < 2 {
+		return nil, fmt.Errorf("el Excel no contiene filas de costos")
+	}
 	headerIndex, columns := -1, map[string]int{}
 	for rowIndex, row := range rows {
 		candidate := map[string]int{}
 		for column, value := range row {
 			header := xlsxHeader(value)
 			switch {
-			case header == "fecha": candidate["date"] = column
-			case header == "rubro" || header == "categoria" || header == "tipo": candidate["category"] = column
-			case header == "monto" || header == "monto q" || header == "valor" || header == "importe": candidate["amount"] = column
-			case strings.Contains(header, "mensajero") || strings.Contains(header, "colaborador"): candidate["messenger"] = column
-			case header == "so" || strings.Contains(header, "comprobante") || strings.Contains(header, "referencia"): candidate["so"] = column
-			case strings.Contains(header, "descripcion") || strings.Contains(header, "observacion") || header == "detalle": candidate["notes"] = column
-			case strings.Contains(header, "centro") || header == "alcance": candidate["scope"] = column
+			case header == "fecha":
+				candidate["date"] = column
+			case header == "rubro" || header == "categoria" || header == "tipo":
+				candidate["category"] = column
+			case header == "monto" || header == "monto q" || header == "valor" || header == "importe":
+				candidate["amount"] = column
+			case strings.Contains(header, "mensajero") || strings.Contains(header, "colaborador"):
+				candidate["messenger"] = column
+			case header == "so" || strings.Contains(header, "comprobante") || strings.Contains(header, "referencia"):
+				candidate["so"] = column
+			case strings.Contains(header, "descripcion") || strings.Contains(header, "observacion") || header == "detalle":
+				candidate["notes"] = column
+			case strings.Contains(header, "centro") || header == "alcance":
+				candidate["scope"] = column
 			}
 		}
-		if _, hasCategory := candidate["category"]; hasCategory { if _, hasAmount := candidate["amount"]; hasAmount { headerIndex, columns = rowIndex, candidate; break } }
+		if _, hasCategory := candidate["category"]; hasCategory {
+			if _, hasAmount := candidate["amount"]; hasAmount {
+				headerIndex, columns = rowIndex, candidate
+				break
+			}
+		}
 	}
-	if headerIndex < 0 { return nil, fmt.Errorf("use las columnas Fecha, Rubro y Monto Q") }
-	get := func(row []string, key string) string { column, ok := columns[key]; if !ok || column < 0 || column >= len(row) { return "" }; return strings.TrimSpace(row[column]) }
+	if headerIndex < 0 {
+		return nil, fmt.Errorf("use las columnas Fecha, Rubro y Monto Q")
+	}
+	get := func(row []string, key string) string {
+		column, ok := columns[key]
+		if !ok || column < 0 || column >= len(row) {
+			return ""
+		}
+		return strings.TrimSpace(row[column])
+	}
 	costs := []importedManualCost{}
 	for _, row := range rows[headerIndex+1:] {
 		category, amount := strings.TrimSpace(get(row, "category")), xlsxNumber(get(row, "amount"))
-		if category == "" && amount == 0 { continue }
-		if amount <= 0 { continue }
-		date := xlsxDateValue(get(row, "date")); if date == "" { date = time.Now().Format("2006-01-02") }
+		if category == "" && amount == 0 {
+			continue
+		}
+		if amount <= 0 {
+			continue
+		}
+		date := xlsxDateValue(get(row, "date"))
+		if date == "" {
+			date = time.Now().Format("2006-01-02")
+		}
 		normalized := xlsxHeader(category)
-		switch { case strings.Contains(normalized, "salario"): category = "Salario"; case strings.Contains(normalized, "parqueo"): category = "Parqueo"; case strings.Contains(normalized, "peaje"): category = "Peaje"; default: category = "Otro" }
-		scope := xlsxHeader(get(row, "scope")); if strings.Contains(scope, "panel") || strings.Contains(scope, "vehiculo") { scope = "paneles" } else { scope = "mensajeros" }
+		switch {
+		case strings.Contains(normalized, "salario"):
+			category = "Salario"
+		case strings.Contains(normalized, "parqueo"):
+			category = "Parqueo"
+		case strings.Contains(normalized, "peaje"):
+			category = "Peaje"
+		default:
+			category = "Otro"
+		}
+		scope := xlsxHeader(get(row, "scope"))
+		if strings.Contains(scope, "panel") || strings.Contains(scope, "vehiculo") {
+			scope = "paneles"
+		} else {
+			scope = "mensajeros"
+		}
 		costs = append(costs, importedManualCost{Date: date, Category: category, Amount: amount, MessengerName: get(row, "messenger"), SO: get(row, "so"), Notes: get(row, "notes"), Scope: scope})
 	}
-	if len(costs) == 0 { return nil, fmt.Errorf("no se encontraron costos válidos; Monto Q debe ser mayor que cero") }
+	if len(costs) == 0 {
+		return nil, fmt.Errorf("no se encontraron costos válidos; Monto Q debe ser mayor que cero")
+	}
 	return costs, nil
 }
 
 func (s *Server) importCostsXLSX(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { http.Error(w, "method", http.StatusMethodNotAllowed); return }
-	if _, ok := s.requireAdmin(w, r); !ok { return }
-	if err := r.ParseMultipartForm(30 << 20); err != nil { http.Error(w, "No se pudo recibir el Excel", http.StatusBadRequest); return }
+	if r.Method != "POST" {
+		http.Error(w, "method", http.StatusMethodNotAllowed)
+		return
+	}
+	if _, ok := s.requireAdmin(w, r); !ok {
+		return
+	}
+	if err := r.ParseMultipartForm(30 << 20); err != nil {
+		http.Error(w, "No se pudo recibir el Excel", http.StatusBadRequest)
+		return
+	}
 	file, header, err := r.FormFile("file")
-	if err != nil { http.Error(w, "Archivo Excel requerido", http.StatusBadRequest); return }
+	if err != nil {
+		http.Error(w, "Archivo Excel requerido", http.StatusBadRequest)
+		return
+	}
 	defer file.Close()
-	if !strings.EqualFold(filepath.Ext(header.Filename), ".xlsx") { http.Error(w, "Formato requerido: .xlsx", http.StatusBadRequest); return }
-	data, err := io.ReadAll(io.LimitReader(file, 30<<20)); if err != nil { http.Error(w, "No se pudo leer el Excel", http.StatusBadRequest); return }
-	costs, err := parseManualCostsXLSX(data); if err != nil { http.Error(w, err.Error(), http.StatusBadRequest); return }
+	if !strings.EqualFold(filepath.Ext(header.Filename), ".xlsx") {
+		http.Error(w, "Formato requerido: .xlsx", http.StatusBadRequest)
+		return
+	}
+	data, err := io.ReadAll(io.LimitReader(file, 30<<20))
+	if err != nil {
+		http.Error(w, "No se pudo leer el Excel", http.StatusBadRequest)
+		return
+	}
+	costs, err := parseManualCostsXLSX(data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	jsonOut(w, map[string]interface{}{"ok": true, "fileName": header.Filename, "costs": costs, "costCount": len(costs)})
 }
 
@@ -3201,6 +3560,26 @@ func (s *Server) publicDriverAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	arr, _ := s.state["orders"].([]interface{})
+	// La traza observada se compone solo de hitos operativos auditables. No se
+	// usa esta geometría como kilometraje real: el recorrido real proviene del
+	// odómetro final menos el inicial.
+	appendRouteEvent := func(kind string, lat, lng, accuracy float64, capturedAt string) {
+		if routeMessenger == nil || lat < -90 || lat > 90 || lng < -180 || lng > 180 || (lat == 0 && lng == 0) {
+			return
+		}
+		if capturedAt == "" {
+			capturedAt = time.Now().Format(time.RFC3339)
+		}
+		track, _ := routeMessenger["gpsTrack"].([]interface{})
+		if sval(routeMessenger["gpsTrackDate"]) != routeDate {
+			track = []interface{}{}
+		}
+		track = append(track, map[string]interface{}{"lat": lat, "lng": lng, "accuracy": accuracy, "at": capturedAt, "source": "evento_operativo", "event": kind})
+		routeMessenger["gpsTrack"] = track
+		routeMessenger["gpsTrackDate"] = routeDate
+		routeMessenger["lastGpsLat"], routeMessenger["lastGpsLng"] = lat, lng
+		routeMessenger["lastGpsAccuracy"], routeMessenger["lastGpsAt"] = accuracy, capturedAt
+	}
 	// La ruta real se construye únicamente con posiciones observadas del
 	// mensajero. No se usa la distancia planificada como kilometraje ejecutado.
 	if action == "gpsPing" {
@@ -3334,6 +3713,7 @@ func (s *Server) publicDriverAction(w http.ResponseWriter, r *http.Request) {
 			target["status"] = "En cliente"
 			target["lockedSequence"] = true
 			if lat, lng := numberValue(q["arrivalLat"]), numberValue(q["arrivalLng"]); lat != 0 || lng != 0 {
+				appendRouteEvent("entrega", lat, lng, numberValue(q["arrivalAccuracy"]), strings.TrimSpace(fmt.Sprint(q["arrivalCapturedAt"])))
 				target["arrivalLat"], target["arrivalLng"] = lat, lng
 				target["arrivalAccuracy"], target["arrivalCapturedAt"] = q["arrivalAccuracy"], q["arrivalCapturedAt"]
 				if target["geoValidationMode"] == "observed_delivery" || target["geoReleaseBypass"] == true {
@@ -3517,6 +3897,7 @@ func (s *Server) publicDriverAction(w http.ResponseWriter, r *http.Request) {
 					m["routeStatus"] = "En ruta"
 					m["odometerStart"] = q["odometer"]
 					m["odometerStartPhoto"] = q["photo"]
+					appendRouteEvent("inicio", numberValue(q["eventLat"]), numberValue(q["eventLng"]), numberValue(q["eventAccuracy"]), strings.TrimSpace(fmt.Sprint(q["eventCapturedAt"])))
 					if v := strings.TrimSpace(fmt.Sprint(q["delayReason"])); v != "" {
 						m["routeStartDelayReason"] = v
 					}
@@ -3545,6 +3926,7 @@ func (s *Server) publicDriverAction(w http.ResponseWriter, r *http.Request) {
 				if action == "returnCedi" {
 					m["routeStatus"] = "Retorno CEDI"
 					m["returnCediAt"] = time.Now().Format(time.RFC3339)
+					appendRouteEvent("retorno_cedi", numberValue(q["eventLat"]), numberValue(q["eventLng"]), numberValue(q["eventAccuracy"]), strings.TrimSpace(fmt.Sprint(q["eventCapturedAt"])))
 				}
 				if action == "closeRoute" {
 					// Cierre por AM/PM cuando el cliente móvil informa daypart; evita que una ruta PM ya asignada bloquee el cierre AM.
@@ -3917,6 +4299,29 @@ func (s *Server) panelRequest(w http.ResponseWriter, r *http.Request) {
 	q["createdAt"] = time.Now().Format(time.RFC3339)
 	s.mu.Lock()
 	arr, _ := s.state["panelRequests"].([]interface{})
+	// Idempotencia de solicitudes: un doble clic o reintento de red no debe
+	// crear dos RQ iguales. Se compara el contenido operativo durante 30 s.
+	duplicateFields := []string{"formType", "requester", "email", "phone", "area", "date", "returnDate", "start", "end", "destination", "client", "reason", "preferredVehicleType", "people"}
+	for i := len(arr) - 1; i >= 0; i-- {
+		item := mapOf(arr[i])
+		created, parseErr := time.Parse(time.RFC3339, sval(item["createdAt"]))
+		if parseErr != nil || time.Since(created) > 30*time.Second {
+			continue
+		}
+		same := true
+		for _, field := range duplicateFields {
+			if strings.TrimSpace(fmt.Sprint(item[field])) != strings.TrimSpace(fmt.Sprint(q[field])) {
+				same = false
+				break
+			}
+		}
+		if same {
+			id := item["id"]
+			s.mu.Unlock()
+			jsonOut(w, map[string]interface{}{"ok": true, "id": id, "duplicatePrevented": true})
+			return
+		}
+	}
 	// Mantiene una secuencia humana única (RQ-12, RQ-13, ...). Los IDs
 	// temporales basados en Unix rompían el consecutivo visible.
 	maxRQ := 0
