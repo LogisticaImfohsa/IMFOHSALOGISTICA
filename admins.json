@@ -31,7 +31,7 @@
     "username": "VENTAS1",
     "name": "Ventas prueba",
     "passwordHash": "e69bebcdd5982f494255c45aa9c897f3cbfdff523de3518e315b5b125537c7c4",
-    "active": true,
+    "active": false,
     "role": "ventas"
   },
   {
@@ -50,11 +50,83 @@
     "messengerId": "m_daniel"
   },
   {
-    "username": "ECIVIL",
-    "name": "Edwin Civil",
+    "username": "OPICHOLA",
+    "name": "Oswaldo Pichola",
     "passwordHash": "e69bebcdd5982f494255c45aa9c897f3cbfdff523de3518e315b5b125537c7c4",
     "active": true,
     "role": "mensajero",
     "messengerId": "m_edwin"
+  },
+  {
+    "username": "VCHICOJ",
+    "name": "Víctor Chicoj",
+    "passwordHash": "3e2cdc344b733a071a8251ffcd8eb693f22ef9735c09ff40e8912898ee8690e0",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_victor"
+  },
+  {
+    "username": "JLOPEZ",
+    "name": "Jeremías López",
+    "passwordHash": "e69bebcdd5982f494255c45aa9c897f3cbfdff523de3518e315b5b125537c7c4",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_jeremias"
+  },
+  {
+    "username": "JJPEDRO",
+    "name": "Juan José Pedro",
+    "passwordHash": "05657cc94178ba43982d04ec3784bc7d86eb32c95e2c40b6e722fe854cc34581",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_r7"
+  },
+  {
+    "username": "RLUNA",
+    "name": "Roberto Luna",
+    "passwordHash": "8c347d57974c315047044d34e073569eb6cf2ca7959e1fd5d9d93c441e8527b9",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_roberto"
+  },
+  {
+    "username": "HPORRAS",
+    "name": "Hugo Porras",
+    "passwordHash": "c64af887d9674ca8412b190b24d2f6832f26bd793741b8950ee0fdef607ecf29",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_miguel"
+  },
+  {
+    "username": "ACUYUCH",
+    "name": "Ángel Cuyuch",
+    "passwordHash": "d5ddec6534429a47d1d26fd93f73aea59f27b589fef66b33a0c3789161c4ddb3",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_inst"
+  },
+  {
+    "username": "FCARDENAS",
+    "name": "Francisco Cárdenas",
+    "passwordHash": "cdcc3185a81e6d0895ae1419cb50a871b476149b15df577f7135fae8c554a1a2",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_panel"
+  },
+  {
+    "username": "KMEJIA",
+    "name": "Kervin Mejía",
+    "passwordHash": "23d5e2929b13efe929ec6064d3fff51d145f73b78ca540067f3542c0d6854bb6",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_r8"
+  },
+  {
+    "username": "WPULEX",
+    "name": "Wiliam Pulex",
+    "passwordHash": "e69bebcdd5982f494255c45aa9c897f3cbfdff523de3518e315b5b125537c7c4",
+    "active": true,
+    "role": "mensajero",
+    "messengerId": "m_wiliam"
   }
 ]

@@ -1,0 +1,696 @@
+{
+  "sales": [
+    {
+      "tag": "div",
+      "cls": "r824-vendors",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 2256408,
+      "text": "Vendedor\n01 · SILVIA CAROLINA MUCHUCH VASQUEZ\n02 · LISDA MALLARI HERNANDEZ ALVIZURES\n03 · "
+    },
+    {
+      "tag": "table",
+      "cls": "table r824-orders",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 1704048,
+      "text": "SO\tCliente y dirección\tFecha / corte\tValor factura\tEstado\tEvidencia\tÚltima actualización\nS"
+    },
+    {
+      "tag": "tbody",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 1639008,
+      "text": "S347966\tADRIANA MARIA CASTILLO OVANDO\nedificio fabra, zona 10\n\t2026-10-23\nCorte 12:30\n\tQ20"
+    },
+    {
+      "tag": "div",
+      "cls": "r824-panel-head",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 113820,
+      "text": "Pedidos del vendedor\n\nInformación de las SO importadas desde Odoo, sin duplicar registros."
+    },
+    {
+      "tag": "div",
+      "cls": "r824-metrics",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 93454,
+      "text": "PEDIDOS ASOCIADOS\n18\nVALOR FACTURADO\nQ33,120.74\nENTREGADOS\n0\nPENDIENTES\n18"
+    },
+    {
+      "tag": "div",
+      "cls": "r824-identity",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 70800,
+      "text": "SC\nVENDEDOR SELECCIONADO\nSILVIA CAROLINA MUCHUCH VASQUEZ\n\nVendedor 01 · enlace activo"
+    },
+    {
+      "tag": "div",
+      "cls": "r824-tabs",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 65120,
+      "text": "Pedidos\nResumen\nAcceso personal"
+    },
+    {
+      "tag": "thead",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 64227,
+      "text": "SO\tCliente y dirección\tFecha / corte\tValor factura\tEstado\tEvidencia\tÚltima actualización"
+    },
+    {
+      "tag": "tr",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 64227,
+      "text": "SO\tCliente y dirección\tFecha / corte\tValor factura\tEstado\tEvidencia\tÚltima actualización"
+    },
+    {
+      "tag": "div",
+      "cls": "top-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41160,
+      "text": "R8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir"
+    },
+    {
+      "tag": "th",
+      "cls": "",
+      "bg": "rgb(8, 44, 69)",
+      "area": 33856,
+      "text": "Cliente y dirección"
+    },
+    {
+      "tag": "div",
+      "cls": "r824-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 24360,
+      "text": "Abrir consulta\nAcciones del enlace…\nCopiar enlace\nCompartir por WhatsApp\nModificar nombre\n"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 23365,
+      "text": "PENDIENTES\n18"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 23363,
+      "text": "PEDIDOS ASOCIADOS\n18"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 23363,
+      "text": "VALOR FACTURADO\nQ33,120.74"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 23363,
+      "text": "ENTREGADOS\n0"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22073,
+      "text": "VENDEDOR SELECCIONADO\nSILVIA CAROLINA MUCHUCH VASQUEZ\n\nVendedor 01 · enlace activo"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 13435,
+      "text": "Pedidos del vendedor\n\nInformación de las SO importadas desde Odoo, sin duplicar registros."
+    },
+    {
+      "tag": "th",
+      "cls": "",
+      "bg": "rgb(8, 44, 69)",
+      "area": 7124,
+      "text": "Última actualización"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 6818,
+      "text": "Ventas\njueves, 29 de octubre de 2026"
+    },
+    {
+      "tag": "button",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 5972,
+      "text": "Acceso personal"
+    },
+    {
+      "tag": "th",
+      "cls": "",
+      "bg": "rgb(8, 44, 69)",
+      "area": 5540,
+      "text": "Estado"
+    },
+    {
+      "tag": "th",
+      "cls": "",
+      "bg": "rgb(8, 44, 69)",
+      "area": 5242,
+      "text": "Valor factura"
+    }
+  ],
+  "messengers": [
+    {
+      "tag": "div",
+      "cls": "r818-list",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 1917784,
+      "text": "DC\nDaniel Choc\nRuta\nGrupo A\nEntrada 09:00\n● En recorrido\n1/3\nENTREGAS\n16.1 km\nRUTA PLANIFI"
+    },
+    {
+      "tag": "div",
+      "cls": "kpis r818-kpis r814-summary",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 169312,
+      "text": "DISPONIBLES\n8\nde 11 mensajeros activos\nCON RUTA ASIGNADA\n2\n18 gestiones programadas\nEN REC"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "DC\nDaniel Choc\nRuta\nGrupo A\nEntrada 09:00\n● En recorrido\n1/3\nENTREGAS\n16.1 km\nRUTA PLANIFI"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "OP\nOswaldo Pichola\nRuta\nGrupo A\nEntrada 09:00\n● Ausente\n0/0\nENTREGAS\n0 km\nRUTA PLANIFICADA"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "JL\nJeremías López\nRuta\nGrupo A\nEntrada 09:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANIFICA"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "RL\nRoberto Luna\nRuta\nGrupo A\nEntrada 09:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANIFICADA"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "HP\nHugo Porras\nRuta\nGrupo B\nEntrada 08:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANIFICADA\n"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "VC\nVíctor Chicoj\nRuta\nGrupo B\nEntrada 08:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANIFICAD"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "JJ\nJuan José Pedro\nRuta\nGrupo B\nEntrada 08:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANIFIC"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "KM\nKervin Mejía\nRuta\nGrupo B\nEntrada 08:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANIFICADA"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "FC\nFrancisco Cárdenas\nRuta\nGrupo A\nEntrada 09:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANI"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "ÁC\nÁngel Cuyuch\nRuta\nGrupo B\nEntrada 08:00\n● Disponible\n0/0\nENTREGAS\n0 km\nRUTA PLANIFICADA"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-main r819-main",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 156096,
+      "text": "WP\nWiliam Pulex\nRuta\nGrupo B\nEntrada 08:00\n● Con ruta\n0/5\nENTREGAS\n50,314.6 km\nRUTA PLANIF"
+    },
+    {
+      "tag": "div",
+      "cls": "pagehead r814-module-head",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 73260,
+      "text": "Administrar…\nTurnos y disponibilidad\nMensajeros retirados (0)\n＋ Agregar mensajero"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "DC\nDaniel Choc\nRuta\nGrupo A\nEntrada 09:00\n● En recorrido"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "OP\nOswaldo Pichola\nRuta\nGrupo A\nEntrada 09:00\n● Ausente"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "JL\nJeremías López\nRuta\nGrupo A\nEntrada 09:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "RL\nRoberto Luna\nRuta\nGrupo A\nEntrada 09:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "HP\nHugo Porras\nRuta\nGrupo B\nEntrada 08:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "VC\nVíctor Chicoj\nRuta\nGrupo B\nEntrada 08:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "JJ\nJuan José Pedro\nRuta\nGrupo B\nEntrada 08:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "KM\nKervin Mejía\nRuta\nGrupo B\nEntrada 08:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "FC\nFrancisco Cárdenas\nRuta\nGrupo A\nEntrada 09:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "ÁC\nÁngel Cuyuch\nRuta\nGrupo B\nEntrada 08:00\n● Disponible"
+    },
+    {
+      "tag": "div",
+      "cls": "r818-ident",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 41625,
+      "text": "WP\nWiliam Pulex\nRuta\nGrupo B\nEntrada 08:00\n● Con ruta"
+    }
+  ],
+  "fleet": [
+    {
+      "tag": "div",
+      "cls": "cards3 r776-vehicle-grid",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 1310540,
+      "text": "Volkswagen Caddy\nPanel · 186GWH · 2015\nÁrea: Logística\nDisponible\n109,850\nkm actuales\n110,"
+    },
+    {
+      "tag": "div",
+      "cls": "kpis r814-summary",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 149776,
+      "text": "VEHÍCULOS\n11\nPANELES / PICKUPS\n5 / 3\nDISPONIBLES\n9\nMANTENIMIENTO\n0"
+    },
+    {
+      "tag": "div",
+      "cls": "pagehead r814-module-head",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 109076,
+      "text": "Acciones de flotilla\nSeleccione una acción…\nAsignar vehículo\nAgregar vehículo"
+    },
+    {
+      "tag": "div",
+      "cls": "top-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 25674,
+      "text": "R8.29.15 · BLOQUEADA\n● Servidor activo\n📦 Seguimiento del pedido\nSalir"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "109,850\nkm actuales\n110,000\npróximo servicio\n150\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "63,906\nkm actuales\n69,950\npróximo servicio\n6,044\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "39,843\nkm actuales\n48,000\npróximo servicio\n8,157\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "17,500\nkm actuales\n20,000\npróximo servicio\n2,500\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "49,500\nkm actuales\n54,300\npróximo servicio\n4,800\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "14,000\nkm actuales\n15,000\npróximo servicio\n1,000\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "124,125\nkm actuales\n127,500\npróximo servicio\n3,375\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "person-stats",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 22842,
+      "text": "31,500\nkm actuales\n35,000\npróximo servicio\n3,500\nkm faltantes"
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-filter",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 20770,
+      "text": "Mostrar vehículos\nPaneles y pickups (8)\nTodos (11)\nPaneles (5)\nPickups (3)\nMotos (3)"
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nAsignar vehículo\nEnviar a mantenimiento\nDar de baja\nFotos "
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nAsignar vehículo\nEnviar a mantenimiento\nDar de baja\nFotos "
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nEditar rango de mantenimiento\nAsignar vehículo\nDar de baja"
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nEditar rango de mantenimiento\nAsignar vehículo\nDar de baja"
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nProgramar mantenimiento\nDesasignar\nFotos / inspección\nRepo"
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nAsignar vehículo\nEnviar a mantenimiento\nDar de baja\nFotos "
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nProgramar mantenimiento\nDesasignar\nFotos / inspección\nRepo"
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 18894,
+      "text": "Acciones\nSeleccione una acción…\nAsignar vehículo\nEnviar a mantenimiento\nDar de baja\nFotos "
+    },
+    {
+      "tag": "div",
+      "cls": "field r778-main-action",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 16750,
+      "text": "Acciones de flotilla\nSeleccione una acción…\nAsignar vehículo\nAgregar vehículo"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 15228,
+      "text": "Volkswagen Caddy\nPanel · 186GWH · 2015\nÁrea: Logística\nDisponible"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 15228,
+      "text": "Toyota Hi Ace\nPanel · 086KTZ · 2024\nÁrea: Logística\nDisponible"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 15228,
+      "text": "Toyota Lite Ace\nPanel · 0031HWM · 2025\nÁrea: Logística\nDisponible"
+    }
+  ],
+  "requests": [
+    {
+      "tag": "table",
+      "cls": "table",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 1115800,
+      "text": "Solicitud\tUso\tEntrega\tSO\tValor SO\tSolicitante / área\tDestino\tEstado\t\nRQ-01\t2026-10-12\t2026"
+    },
+    {
+      "tag": "tbody",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 1052040,
+      "text": "RQ-01\t2026-10-12\t2026-10-16\t—\tQ0.00\tkarla pesquera\nISC / Servicio Técnico\n\t9 gestiones pro"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-cal-head",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 73324,
+      "text": "Calendario de paneles y pickups\n\nCada bloque identifica reservas, gestiones y períodos de "
+    },
+    {
+      "tag": "div",
+      "cls": "pagehead",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 66748,
+      "text": "🔗 Compartir formulario"
+    },
+    {
+      "tag": "thead",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 62963,
+      "text": "Solicitud\tUso\tEntrega\tSO\tValor SO\tSolicitante / área\tDestino\tEstado"
+    },
+    {
+      "tag": "tr",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 62963,
+      "text": "Solicitud\tUso\tEntrega\tSO\tValor SO\tSolicitante / área\tDestino\tEstado"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-week",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 51008,
+      "text": "Lun\nMar\nMié\nJue\nVie\nSáb\nDom"
+    },
+    {
+      "tag": "div",
+      "cls": "r82211-calendar-summary",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 47820,
+      "text": "0 gestiones pendientes\n34 reservas/asignaciones\n2 mantenimientos"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 27188,
+      "text": "00:00 703KFV · SANTA LUCIA COTZULAMGUAPA\n00:00 607HTV · ZONA 10 EDIFICIO SIXTINO\n10:00 487"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 27186,
+      "text": "00:00 607HTV · ZONA 10 EDIFICIO SIXTINO\n00:00 703KFV · ANTIGUA GUATEMALA\n10:00 487KSP · EL"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 27186,
+      "text": "00:00 703KFV · MATEQUESCUINTLA\n00:00 607HTV · ZONA 10\n10:00 487KSP · EL SALVADOR\n09:55 323"
+    },
+    {
+      "tag": "div",
+      "cls": "top-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 25674,
+      "text": "R8.29.15 · BLOQUEADA\n● Servidor activo\n📦 Seguimiento del pedido\nSalir"
+    },
+    {
+      "tag": "div",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 23530,
+      "text": "Calendario de paneles y pickups\n\nCada bloque identifica reservas, gestiones y períodos de "
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 21581,
+      "text": "00:00 703KFV · JUTIAPA\n00:00 607HTV · SAN JOSE PINULA\n10:00 487KSP · EL SALVADOR\n09:55 323"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 21581,
+      "text": "06:01 086KTZ · UFM\n00:00 703KFV · ZONA 12\n00:00 607HTV · JUTIAPA\n00:00 703KFV · ZONA 12"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 21579,
+      "text": "00:00 703KFV · MAZATENANGO\nMANT. · 0031HWM · Servicio mayor\nMANT. · 640HWM · Servicio mayo"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 21579,
+      "text": "00:00 703KFV · ZONA 14\n00:00 607HTV · SAN JUAN COMALAPA\n00:00 703KFV · ZONA 14\n00:00 607HT"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 15974,
+      "text": "00:00 703KFV · XELA-HUEHUE\n00:00 640HWM · SAN JUAN SACATEPEQUEZ\n00:00 607HTV · COBAN"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 15973,
+      "text": "00:00 607HTV · CHIQUIMULA\n00:00 703KFV · SANTA LUCIA COTZULAMGUAPA\n09:55 323KTM · Xela y H"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 15973,
+      "text": "00:00 607HTV · QUETZALTENANGO\n00:00 703KFV · JUTIAPA\n00:00 607HTV · QUETZALTENANGO"
+    },
+    {
+      "tag": "th",
+      "cls": "",
+      "bg": "rgb(8, 44, 69)",
+      "area": 11799,
+      "text": "Destino"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 10367,
+      "text": "00:00 703KFV · XELA-HUEHUE\n00:00 607HTV · MAZATENANGO"
+    },
+    {
+      "tag": "div",
+      "cls": "r774-events",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 10367,
+      "text": "00:00 703KFV · ZONA 9\n00:00 607HTV · ASEQUIA, EL PROGRESO"
+    },
+    {
+      "tag": "div",
+      "cls": "list-actions",
+      "bg": "rgba(0, 0, 0, 0)",
+      "area": 10040,
+      "text": "‹\noctubre de 2026\n›"
+    },
+    {
+      "tag": "th",
+      "cls": "",
+      "bg": "rgb(8, 44, 69)",
+      "area": 9441,
+      "text": "Solicitante / área"
+    }
+  ]
+}

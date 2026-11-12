@@ -1,0 +1,175 @@
+html body.imf-clear-copy.imf-module-planner #appShell .topbar,
+html body.imf-clear-copy.imf-module-planner #appShell .main,
+html body.imf-clear-copy.imf-module-planner #content{background:#f2f7fb!important;color:#13293d!important}
+html body.imf-clear-copy.imf-module-planner #content>.pagehead,
+html body.imf-clear-copy.imf-module-planner #content>.r756-planner-head{background:#fff!important;background-image:none!important;color:#13293d!important;border:1px solid #c8d9e8!important;box-shadow:0 3px 12px rgba(16,55,86,.05)!important}
+html body.imf-clear-copy.imf-module-planner #content>.pagehead h1,
+html body.imf-clear-copy.imf-module-planner #content>.pagehead h2,
+html body.imf-clear-copy.imf-module-planner #content>.pagehead p{color:#13293d!important}
+html body.imf-clear-copy.imf-module-planner #content>.pagehead .toolbar{background:#fff!important;background-image:none!important;color:#13293d!important}
+html body.imf-clear-copy.imf-module-planner #content>.r760-planner-filters{background:#fff!important;background-image:none!important;color:#13293d!important;border:1px solid #c8d9e8!important;box-shadow:0 3px 12px rgba(16,55,86,.04)!important}
+html body.imf-clear-copy.imf-module-planner #content>.r760-planner-filters .r810-filter-field,
+html body.imf-clear-copy.imf-module-planner #content>.r760-planner-filters .r810-view-buttons{background:transparent!important;color:#13293d!important;border:0!important}
+html body.imf-clear-copy.imf-module-planner .r810-filter-field>span{color:#587087!important}
+html body.imf-clear-copy.imf-module-planner .r810-panel-head{background:#edf5fb!important;color:#13293d!important}
+html body.imf-clear-copy.imf-module-planner .r810-panel-head h3,
+html body.imf-clear-copy.imf-module-planner .r810-panel-head b{color:#13293d!important}
+
+/* Modo claro único: se conserva la estructura y las funciones originales. */
+html body.imf-clear-copy .r824-picker,
+html body.imf-clear-copy .r824-summary,
+html body.imf-clear-copy .r824-panel,
+html body.imf-clear-copy .r818-tools,
+html body.imf-clear-copy .r818-person,
+html body.imf-clear-copy .r819-person,
+html body.imf-clear-copy .r774-cal-day,
+html body.imf-clear-copy .r82212-maint-info{
+  background:#fff!important;
+  background-image:none!important;
+  color:#13293d!important;
+  border-color:#c8d9e8!important;
+  box-shadow:0 3px 12px rgba(16,55,86,.05)!important
+}
+html body.imf-clear-copy .r824-summary *,
+html body.imf-clear-copy .r824-panel *,
+html body.imf-clear-copy .r818-person *,
+html body.imf-clear-copy .r819-person *,
+html body.imf-clear-copy .r774-cal-day *,
+html body.imf-clear-copy .r82212-maint-info *{color:inherit}
+html body.imf-clear-copy .r824-summary,
+html body.imf-clear-copy .r824-picker,
+html body.imf-clear-copy .r818-tools{border:1px solid #c8d9e8!important}
+html body.imf-clear-copy .r818-person .r818-metric,
+html body.imf-clear-copy .r819-person .r819-metric{border-color:#d8e5ef!important}
+html body.imf-clear-copy .r774-cal-grid{gap:1px!important;background:#c8d9e8!important;border:1px solid #c8d9e8!important}
+html body.imf-clear-copy .r774-cal-day.is-outside,
+html body.imf-clear-copy .r774-cal-day.outside{background:#eef3f7!important;color:#6b7f91!important}
+html body.imf-clear-copy .r774-cal-day.is-today{box-shadow:inset 0 0 0 2px #1477c9!important}
+html body.imf-clear-copy .r82212-maint-info.future{background:#fff8e7!important;color:#765400!important}
+
+/* Contraste AA y superficies claras en todos los módulos administrativos. */
+html body.imf-clear-copy #content{color:#102a43!important}
+html body.imf-clear-copy #content .muted,
+html body.imf-clear-copy #content .small,
+html body.imf-clear-copy #content small{color:#48647a!important;opacity:1!important}
+html body.imf-clear-copy #content .kpi,
+html body.imf-clear-copy #content .card,
+html body.imf-clear-copy #content .panel,
+html body.imf-clear-copy #content .r814-summary>*{
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#102a43!important;
+  border-color:#bfd2e2!important;
+  opacity:1!important
+}
+html body.imf-clear-copy #content .kpi b,
+html body.imf-clear-copy #content .kpi strong,
+html body.imf-clear-copy #content .kpi .value,
+html body.imf-clear-copy #content .r814-summary b,
+html body.imf-clear-copy #content .r814-summary strong{color:#102a43!important;opacity:1!important}
+html body.imf-clear-copy #content .kpi span,
+html body.imf-clear-copy #content .kpi small,
+html body.imf-clear-copy #content .r814-summary span,
+html body.imf-clear-copy #content .r814-summary small{color:#3f5d73!important;opacity:1!important}
+html body.imf-clear-copy #content .kpis article{
+  background:#fff!important;
+  background-image:none!important;
+  color:#102a43!important;
+  border-color:#bfd2e2!important;
+  opacity:1!important
+}
+html body.imf-clear-copy #content .kpis article>span,
+html body.imf-clear-copy #content .kpis article>small{color:#3f5d73!important;opacity:1!important}
+html body.imf-clear-copy #content .kpis article>strong,
+html body.imf-clear-copy #content .kpis article>b{color:#102a43!important;opacity:1!important}
+html body.imf-clear-copy #content label,
+html body.imf-clear-copy #content .field>label{color:#29465c!important;opacity:1!important}
+
+html body.imf-clear-copy .r813-panel{background:#fff!important;color:#102a43!important;border-color:#bfd2e2!important}
+html body.imf-clear-copy .r813-title h3{color:#102a43!important}
+html body.imf-clear-copy .r813-title p,
+html body.imf-clear-copy .r813-bar-row>span,
+html body.imf-clear-copy .r813-empty{color:#3f5d73!important;opacity:1!important}
+html body.imf-clear-copy .r813-bar-row>strong,
+html body.imf-clear-copy .r813-capacity>div b{color:#102a43!important}
+html body.imf-clear-copy .r813-bar-row>i,
+html body.imf-clear-copy .r813-capacity>i{background:#dce7ef!important}
+html body.imf-clear-copy .r813-attention li{border-color:#d7e3ec!important}
+html body.imf-clear-copy .r813-attention li b{color:#102a43!important}
+html body.imf-clear-copy .r813-attention li small{color:#48647a!important}
+html body.imf-clear-copy .r774-cal-head h2,
+html body.imf-clear-copy .r774-cal-head h3,
+html body.imf-clear-copy .r774-cal-head p,
+html body.imf-clear-copy .r774-week{color:#29465c!important;opacity:1!important}
+
+/* El planificador también utiliza superficies claras; el mapa conserva su estilo propio. */
+html body.imf-clear-copy.imf-module-planner .planner-left,
+html body.imf-clear-copy.imf-module-planner .r810-resources,
+html body.imf-clear-copy.imf-module-planner .r810-resource-body,
+html body.imf-clear-copy.imf-module-planner .planner-left>.unassigned{
+  background:#fff!important;
+  background-image:none!important;
+  color:#102a43!important;
+  border-color:#bfd2e2!important;
+  scrollbar-color:#8ba8bd #edf4f8!important
+}
+html body.imf-clear-copy.imf-module-planner .r810-order-tools,
+html body.imf-clear-copy.imf-module-planner .r810-resource-search,
+html body.imf-clear-copy.imf-module-planner .r810-panel-foot{
+  background:#f5f9fc!important;
+  color:#29465c!important;
+  border-color:#c8d9e8!important
+}
+html body.imf-clear-copy.imf-module-planner .r810-search{
+  background:#fff!important;
+  color:#29465c!important;
+  border-color:#9fbbcf!important
+}
+html body.imf-clear-copy.imf-module-planner .r810-search input{color:#102a43!important}
+html body.imf-clear-copy.imf-module-planner .r810-search input::placeholder{color:#557087!important;opacity:1!important}
+html body.imf-clear-copy.imf-module-planner .r810-order-filters button{
+  background:#e7f0f7!important;
+  color:#24455e!important
+}
+html body.imf-clear-copy.imf-module-planner .r810-order-filters button.active{
+  background:#0869c8!important;
+  color:#fff!important
+}
+html body.imf-clear-copy.imf-module-planner .unassigned .stop,
+html body.imf-clear-copy.imf-module-planner .r765-route-card,
+html body.imf-clear-copy.imf-module-planner .r810-resources .route-card{
+  background:#fff!important;
+  background-image:none!important;
+  color:#102a43!important;
+  border-color:#b9cfdf!important
+}
+html body.imf-clear-copy.imf-module-planner .unassigned .stop.r810-selected{background:#eef6ff!important}
+html body.imf-clear-copy.imf-module-planner .unassigned .stop .muted,
+html body.imf-clear-copy.imf-module-planner .r765-route-sub,
+html body.imf-clear-copy.imf-module-planner .r765-route-metrics{color:#48647a!important;opacity:1!important}
+html body.imf-clear-copy.imf-module-planner .r765-route-sub *,
+html body.imf-clear-copy.imf-module-planner .r765-route-metrics *{color:#48647a!important;opacity:1!important}
+html body.imf-clear-copy.imf-module-planner .r810-order-action,
+html body.imf-clear-copy.imf-module-planner .r765-route-action{
+  background:#fff!important;
+  color:#173b57!important;
+  border-color:#9fbbcf!important
+}
+html body.imf-clear-copy.imf-module-planner .imf-route-import{
+  background:#075fad!important;
+  color:#fff!important;
+  border-color:#075fad!important;
+  font-weight:800!important;
+  box-shadow:0 3px 9px rgba(7,95,173,.22)!important
+}
+/* Auditoría visual R8.29.15: contraste AA y calendario operativo claro. */
+body.imf-clear-copy{background:#f2f7fc!important;color:#13293d!important}
+body.imf-clear-copy .card,body.imf-clear-copy .section,body.imf-clear-copy .r765-route-card,body.imf-clear-copy .route-card{color:#13293d}
+body.imf-clear-copy input,body.imf-clear-copy select,body.imf-clear-copy textarea{background:#fff!important;color:#13293d!important;border-color:#9fb8cf!important}
+body.imf-clear-copy input::placeholder,body.imf-clear-copy textarea::placeholder{color:#526b82!important;opacity:1}
+body.imf-clear-copy .small{color:#49647c}
+.calendar-event,.panel-calendar-event,[class*="calendar-event"]{background:#1267d6!important;color:#fff!important;border:1px solid #0751ad!important}
+.calendar-event.requested,.calendar-event.pending,[data-status="Solicitada"],[data-status="Pendiente"]{background:#a65f00!important;color:#fff!important;border-color:#744200!important}
+.calendar-event.approved,[data-status="Aprobada"],[data-status="Reservado"]{background:#087a55!important;color:#fff!important;border-color:#05583e!important}
+.calendar-event.maintenance,[data-status="Mantenimiento"]{background:#7950b5!important;color:#fff!important;border-color:#53327f!important}
+.calendar-event.rejected,.calendar-event.conflict,[data-status="Rechazada"],[data-status="Conflicto"]{background:#b42336!important;color:#fff!important;border-color:#7d1725!important}

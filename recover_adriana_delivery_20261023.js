@@ -1,0 +1,33 @@
+const fs=require('fs');
+const path=require('path');
+const dataPath=path.join(__dirname,'data','state.json');
+const backupPath=path.join(__dirname,'data',`state.pre_recover_adriana_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+const state=JSON.parse(fs.readFileSync(dataPath,'utf8'));
+const order=(state.orders||[]).find(o=>o.id==='o_intake_1792784723926_3f03'&&o.orderNo==='S347966');
+if(!order)throw new Error('No se encontró S347966.');
+if(order.status!=='En cliente')throw new Error(`Estado inesperado: ${order.status}. No se modificó.`);
+const photos=['/uploads/1792789044098225900_27bb3346.jpg','/uploads/1792789095079515500_42a43cad.jpg'];
+for(const photo of photos){if(!fs.existsSync(path.join(__dirname,photo.replace(/^\//,''))))throw new Error(`Falta evidencia ${photo}. No se modificó.`)}
+fs.copyFileSync(dataPath,backupPath);
+const closedAt='2026-10-23T14:58:15-06:00';
+order.status='Entregado';
+order.deliveredAt=closedAt;
+order.completedAt=closedAt;
+order.photos=photos;
+order.receivedBy='Recepción FABRA';
+order.recipientRelation='Recepción';
+order.notes='Entrega recuperada: evidencia fotográfica cargada por Daniel; factura sellada FABRA RECIBIDO.';
+order.deliveryLat=Number(order.arrivalLat);
+order.deliveryLng=Number(order.arrivalLng);
+order.deliveryCapturedAt=closedAt;
+order.recoveredAt=new Date().toISOString();
+order.recoveredBy='auditoria_operativa';
+order.recoveryReason='Las fotos se cargaron correctamente, pero el cierre no se vinculó al pedido.';
+order.visitHistory=Array.isArray(order.visitHistory)?order.visitHistory:[];
+const visit=order.visitHistory.at(-1);
+if(visit&&visit.result==='En cliente'){visit.result='Entregado';visit.closedAt=closedAt;visit.photos=[...photos];visit.receivedBy=order.receivedBy;visit.recipientRelation=order.recipientRelation;visit.recovered=true}
+else order.visitHistory.push({address:order.address||'',arrivalLat:order.arrivalLat,arrivalLng:order.arrivalLng,at:order.arrivedAt,closedAt,cut:order.cut,messengerId:order.messengerId,result:'Entregado',photos:[...photos],receivedBy:order.receivedBy,recipientRelation:order.recipientRelation,recovered:true});
+state.routeLearning=state.routeLearning||[];
+state.routeLearning.push({type:'delivery_recovery',at:new Date().toISOString(),orderId:order.id,orderNo:order.orderNo,messengerId:order.messengerId,closedAt,photos:[...photos],reason:order.recoveryReason});
+fs.writeFileSync(dataPath,JSON.stringify(state,null,2)+'\n','utf8');
+console.log(JSON.stringify({ok:true,backupPath,orderNo:order.orderNo,status:order.status,deliveredAt:order.deliveredAt,photos:order.photos,receivedBy:order.receivedBy},null,2));

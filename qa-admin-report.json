@@ -1,0 +1,88 @@
+{
+  "results": [
+    {
+      "module": "dashboard",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": true,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nDashboard\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\nDía\nSemana\nMes\nTodos los centros\nFORUM BUSINESS LA PAZ · Zona 16\nBodega / Operación Zona 4\nTodos los cortes\nCorte 08:00\nCorte 09:30\nCorte 12:30\nCorte 14:00\nExportar…\nDescargar Excel del período\nDesca"
+    },
+    {
+      "module": "planner",
+      "bodyClass": "imf-approved-access imf-clear-copy r760-planner-view r810-planner imf-module-planner",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": true,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "CONTROL OPERATIVO CENTRAL\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nPlanificador de rutas\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\n📍 Ubicaciones pendientes (6)\n📥 Escanear / cargar ruta...\nImportar Excel de Odoo\nSeleccionar PDF o imágenes\nCargar desde teléfono\nTomar una fotografía\n🧠 Analizar y proponer rutas\n•••\n📊"
+    },
+    {
+      "module": "orders",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": false,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nPedidos y despachos\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\nImportar Excel de Odoo\nExportar…\nExcel del día\nHistórico filtrado CSV\nTodos los estados\nPendiente\nAsignado\nEn ruta\nEn cliente\nEntregado\nNo entregado\nPendiente corrección\nAnulado\n19 registro"
+    },
+    {
+      "module": "sales",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": false,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nVentas\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\n25/25 enlaces activos\nVendedor\n01 · SILVIA CAROLINA MUCHUCH VASQUEZ\n02 · LISDA MALLARI HERNANDEZ ALVIZURES\n03 · VENDEDOR PENDIENTE 03\n04 · VENDEDOR PENDIENTE 04\n05 · VENDEDOR PENDIENTE 05\n06 · VENDEDOR "
+    },
+    {
+      "module": "messengers",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": true,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nMensajeros\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\nAdministrar…\nTurnos y disponibilidad\nMensajeros retirados (0)\n＋ Agregar mensajero\nDISPONIBLES\n0\nde 11 mensajeros activos\nCON RUTA ASIGNADA\n1\n19 gestiones programadas\nEN RECORRIDO\n1\nrutas actualmente"
+    },
+    {
+      "module": "fleet",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": false,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nFlotilla\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\nAcciones de flotilla\nSeleccione una acción…\nAsignar vehículo\nAgregar vehículo\nVEHÍCULOS\n11\nPANELES / PICKUPS\n5 / 3\nDISPONIBLES\n10\nMANTENIMIENTO\n0\nMostrar vehículos\nPaneles y pickups (8)\nTodos (11)\nPaneles (5)"
+    },
+    {
+      "module": "requests",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": false,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nSolicitud de vehículo\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\n🔗 Compartir formulario\nCalendario de paneles y pickups\n\nCada bloque identifica reservas, gestiones y períodos de mantenimiento.\n\n‹\noctubre de 2026\n›\n0 gestiones pendientes\n34 reservas/asignacion"
+    },
+    {
+      "module": "costs",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": false,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nCombustibles y costos\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\n↻ Actualizar reporte\n⬇ Exportar Excel\nSeparación de centros de costo\n\nMensajeros / motos y Paneles / vehículos conservan indicadores y cálculos independientes.\n\nMensajeros / Motos\nPaneles"
+    },
+    {
+      "module": "settings",
+      "bodyClass": "imf-approved-access imf-clear-copy",
+      "finalCss": 1,
+      "duplicateSelectedOptions": 0,
+      "messengerDaniel": true,
+      "hasDarkThemeToggle": false,
+      "pageTextStart": "Control operativo central\n▦\nDashboard\n⌖\nPlanificador de rutas\n▤\nPedidos y despachos\n▥\nVentas\n♟\nMensajeros\n◇\nFlotilla\n▱\nSolicitud de vehículo\n▥\nCombustibles y costos\n⚙\nConfiguración\nConfiguración\nviernes, 23 de octubre de 2026\nR8.29.15 · BLOQUEADA\n‹\n›\nHoy\n● Servidor activo\n📦 Seguimiento del pedido\nSalir\nGuardar configuración\nMensajeros / motos\nPrecio combustible Q/gal\nDepreciación moto Q/km\nMoto 125cc km/gal\nMoto 150cc km/gal\nParqueos: no se calculan automáticamente; se registran manualmente en "
+    }
+  ],
+  "errors": [
+    "Failed to load resource: the server responded with a status of 401 ()"
+  ]
+}
