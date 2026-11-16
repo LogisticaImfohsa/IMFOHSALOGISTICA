@@ -24,11 +24,18 @@
 
 /* modal */
 .modal-back{position:fixed;inset:0;background:rgba(4,12,22,.68);display:grid;place-items:center;z-index:2000;padding:14px}.modal{background:#fff;border-radius:18px;max-width:760px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.35)}.modal-head{padding:16px 18px;border-bottom:1px solid #e4eaf1;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:2}.modal-body{padding:18px}.modal-foot{padding:14px 18px;border-top:1px solid #e4eaf1;display:flex;justify-content:flex-end;gap:9px;position:sticky;bottom:0;background:#fff}.xbtn{border:0;background:#eef2f6;border-radius:50%;width:34px;height:34px;cursor:pointer}.toastbox{position:fixed;right:18px;bottom:18px;z-index:3000;display:flex;flex-direction:column;gap:8px}.toast{background:#10243a;color:#fff;padding:12px 14px;border-radius:11px;box-shadow:var(--shadow);max-width:340px}.login{min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at top left,#173b64,#07111f 55%);padding:16px}.login-card{width:min(440px,100%);padding:26px}.login-card h1{margin:0 0 5px}.login-card p{color:#6c7c90}.tabs{display:flex;gap:6px;border-bottom:1px solid #dfe7ef;margin-bottom:15px;overflow:auto}.tab{border:0;background:transparent;padding:10px 13px;font-weight:800;color:#64748b;cursor:pointer;white-space:nowrap}.tab.active{color:#1465d8;border-bottom:3px solid #1465d8}.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.chartbox{padding:16px;height:340px;min-height:340px;position:relative;overflow:hidden}.chartbox canvas{display:block!important;width:100%!important;height:270px!important;max-height:270px!important}.good{color:#17825a}.bad{color:#c73a49}.warn{color:#b56b12}.small{font-size:12px;color:#6f7e90}.divider{height:1px;background:#e4eaf1;margin:14px 0}.list-actions{display:flex;gap:6px;flex-wrap:wrap}.insight{padding:10px 12px;border-left:4px solid #2f72df;background:#f2f7ff;border-radius:8px;margin:8px 0;font-size:13px}
-@media(max-width:1050px){#appShell{grid-template-columns:78px 1fr}.brand b,.brand span,.navbtn span{display:none}.navbtn{justify-content:center;font-size:20px}.kpis{grid-template-columns:repeat(2,1fr)}.cards3{grid-template-columns:repeat(2,1fr)}.planner-shell{grid-template-columns:330px 1fr}.section-grid{grid-template-columns:1fr}}
+@media(max-width:1050px) and (min-width:901px){#appShell{grid-template-columns:78px 1fr}.brand b,.brand span,.navbtn span{display:none}.navbtn{justify-content:center;font-size:20px}.kpis{grid-template-columns:repeat(2,1fr)}.cards3{grid-template-columns:repeat(2,1fr)}.planner-shell{grid-template-columns:330px 1fr}.section-grid{grid-template-columns:1fr}}
 @media(max-width:900px){
   #appShell{display:block!important;position:relative!important}
   .sidebar{display:flex!important;flex-direction:column!important;position:fixed!important;top:0!important;left:0!important;bottom:0!important;width:280px!important;max-width:85vw!important;height:100vh!important;z-index:100000!important;transform:translateX(-100%)!important;transition:transform .28s cubic-bezier(.4,0,.2,1)!important;box-shadow:6px 0 28px rgba(0,0,0,.35)!important;background:#061f31!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;padding:16px 14px 28px!important}
   .sidebar.mobile-open{transform:translateX(0)!important}
+  .sidebar .brand span{display:block!important;font-size:11px!important;color:#8da4be!important;letter-spacing:.5px!important;text-transform:uppercase!important;margin-top:2px!important}
+  .sidebar .brand b{display:block!important}
+  .sidebar .navbtn{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;width:100%!important;padding:12px 14px!important;font-size:14px!important;font-weight:700!important;color:#c7d9e9!important;text-align:left!important;min-height:46px!important;border-radius:10px!important}
+  .sidebar .navbtn.active{background:#0d6caf!important;color:#fff!important}
+  .sidebar .navbtn span{display:inline-block!important;font-size:14px!important;color:inherit!important;visibility:visible!important;opacity:1!important;text-align:left!important}
+  .sidebar .navbtn .r814-nav-icon,.sidebar .navbtn > span:first-child:not(:only-child){font-size:18px!important;width:24px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important}
+
   .imf-mobile-menu-btn{display:inline-flex!important;align-items:center;gap:6px;background:#edf5fb;border:1px solid #bfd5e8;border-radius:8px;color:#075fad;padding:7px 11px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0}
   .imf-sidebar-close{display:block!important;background:transparent;border:0;color:#fff;font-size:22px;line-height:1;padding:6px 10px;cursor:pointer}
   .imf-sidebar-backdrop{position:fixed;inset:0;background:rgba(5,18,32,.65);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:99990;opacity:0;pointer-events:none;transition:opacity .25s ease}
@@ -202,9 +209,9 @@ body{background:#f3f6fa}
 @media(max-width:760px){.r796-review{grid-template-columns:1fr}.r796-source{position:static}.r796-source>img{max-height:300px}.r796-fields{grid-template-columns:1fr}.r796-fields .field{grid-column:1!important}}
 @media(max-width:760px){.r797-map-head,.r797-map-foot{align-items:stretch;flex-direction:column}.r797-review-map{height:280px}.r797-map-foot b{white-space:normal}}
 </style>
-<link rel="stylesheet" href="r82915-copy-approved.css?v=mobile-v2">
-<link rel="stylesheet" href="r82915-access-approved.css?v=mobile-v2">
-<link rel="stylesheet" href="r82915-admin-final.css?v=mobile-v2">
+<link rel="stylesheet" href="r82915-copy-approved.css?v=mobile-v3">
+<link rel="stylesheet" href="r82915-access-approved.css?v=mobile-v3">
+<link rel="stylesheet" href="r82915-admin-final.css?v=mobile-v3">
 <script>
 (function(){
   window.__IMF_HIDDEN_ACCESS_STANDALONE=true;
@@ -222,7 +229,7 @@ body{background:#f3f6fa}
   },true);
 })();
 </script>
-<script defer src="r82915-copy-approved.js?v=mobile-v2"></script>
+<script defer src="r82915-copy-approved.js?v=mobile-v3"></script>
 </head>
 <body>
 <div id="root"></div><div id="modalRoot"></div><div class="toastbox" id="toastbox"></div>
