@@ -1,0 +1,23 @@
+IMFOHSA R8.29.15 - COPIA DE TRABAJO VIGENTE / ODOO READY
+Fecha de paquete: 2026-11-14
+
+Origen único:
+C:\Users\William Fuentes\Documents\Codex\2026-08-25\cr\work\IMFOHSA_R777\IMFOHSA_R777_PILOTO\R8.29.15_COPIA_CLARA_APROBADA
+
+Servidor compilado desde:
+server_copia_aprobada_8946.go
+
+Binarios de la misma compilación (no son versiones diferentes):
+- IMFOHSA_SERVIDOR.exe: Windows amd64.
+- IMFOHSA_SERVIDOR: Linux amd64.
+
+Entrada pública:
+index.html (¿Dónde va mi pedido?)
+
+Este paquete no incluye los ejecutables históricos server_*.exe de la carpeta de desarrollo.
+
+Integración Odoo:
+- Contrato y variables documentados.
+- Credenciales exclusivamente por variables del servidor.
+- Sincronización desactivada hasta que BI/IT configure y pruebe Odoo.
+- El paquete no contiene contraseñas ni API keys de Odoo.

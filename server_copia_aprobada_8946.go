@@ -139,6 +139,34 @@ type xlsxSharedStrings struct {
 	} `xml:"si"`
 }
 
+// OdooConfig keeps every credential on the server. Nothing in this structure
+// is serialized to index.html or returned by the public API.
+type OdooConfig struct {
+	URL         string
+	Database    string
+	Username    string
+	APIKey      string
+	StatusField string
+}
+
+type odooRPCRequest struct {
+	JSONRPC string        `json:"jsonrpc"`
+	Method  string        `json:"method"`
+	Params  odooRPCParams `json:"params"`
+	ID      int64         `json:"id"`
+}
+
+type odooRPCParams struct {
+	Service string        `json:"service"`
+	Method  string        `json:"method"`
+	Args    []interface{} `json:"args"`
+}
+
+type odooRPCResponse struct {
+	Result interface{} `json:"result"`
+	Error  interface{} `json:"error"`
+}
+
 func main() {
 	exe, _ := os.Executable()
 	root := filepath.Dir(exe)
@@ -152,11 +180,10 @@ func main() {
 			root = configured
 		}
 	}
-	if runtime.GOOS != "windows" {
-		if wd, err := os.Getwd(); err == nil {
-			root = wd
-		}
-	}
+	// La raiz siempre es la carpeta del ejecutable. Antes, en Linux se usaba el
+	// directorio de trabajo del servicio (systemd/docker), lo que podia crear un
+	// estado nuevo y omitir usuarios, pedidos y tokens incluidos en la copia.
+	// IMFOHSA_ROOT sigue disponible como unica anulacion explicita.
 	s := &Server{sessions: map[string]string{}, root: root, eventClients: map[chan int64]bool{}, captures: map[string]*CaptureSession{}, trackingAttempts: map[string][]time.Time{}}
 	if err := s.loadState(); err != nil {
 		log.Fatal(err)
@@ -199,6 +226,10 @@ func main() {
 	mux.HandleFunc("/api/upload", s.upload)
 	mux.HandleFunc("/api/import-xlsx", s.importXLSX)
 	mux.HandleFunc("/api/import-costs-xlsx", s.importCostsXLSX)
+	mux.HandleFunc("/api/odoo/status", s.odooStatus)
+	mux.HandleFunc("/api/odoo/test", s.odooTest)
+	mux.HandleFunc("/api/odoo/pull", s.odooPull)
+	mux.HandleFunc("/api/odoo/push", s.odooPush)
 	mux.HandleFunc("/api/public/driver", s.publicDriver)
 	mux.HandleFunc("/api/public/driver-action", s.publicDriverAction)
 	mux.HandleFunc("/api/public/panel", s.publicPanel)
@@ -2982,6 +3013,294 @@ func parseManualCostsXLSX(data []byte) ([]importedManualCost, error) {
 	return costs, nil
 }
 
+func currentOdooConfig() OdooConfig {
+	return OdooConfig{
+		URL:         strings.TrimRight(strings.TrimSpace(os.Getenv("IMFOHSA_ODOO_URL")), "/"),
+		Database:    strings.TrimSpace(os.Getenv("IMFOHSA_ODOO_DATABASE")),
+		Username:    strings.TrimSpace(os.Getenv("IMFOHSA_ODOO_USERNAME")),
+		APIKey:      strings.TrimSpace(os.Getenv("IMFOHSA_ODOO_API_KEY")),
+		StatusField: strings.TrimSpace(os.Getenv("IMFOHSA_ODOO_STATUS_FIELD")),
+	}
+}
+
+func (c OdooConfig) ready() bool {
+	return c.URL != "" && c.Database != "" && c.Username != "" && c.APIKey != ""
+}
+
+func (c OdooConfig) safeStatus() map[string]interface{} {
+	return map[string]interface{}{
+		"configured":  c.ready(),
+		"url":         c.URL,
+		"database":    c.Database,
+		"username":    c.Username,
+		"statusField": c.StatusField,
+		"hasAPIKey":   c.APIKey != "",
+	}
+}
+
+func odooRPC(ctx *http.Request, cfg OdooConfig, service, method string, args ...interface{}) (interface{}, error) {
+	payload := odooRPCRequest{JSONRPC: "2.0", Method: "call", Params: odooRPCParams{Service: service, Method: method, Args: args}, ID: time.Now().UnixNano()}
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequestWithContext(ctx.Context(), http.MethodPost, cfg.URL+"/jsonrpc", bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "IMFOHSA-R8.29.15-Odoo-Connector")
+	client := &http.Client{Timeout: 45 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("Odoo respondió HTTP %s", resp.Status)
+	}
+	var out odooRPCResponse
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 20<<20)).Decode(&out); err != nil {
+		return nil, err
+	}
+	if out.Error != nil {
+		return nil, fmt.Errorf("Odoo RPC: %v", out.Error)
+	}
+	return out.Result, nil
+}
+
+func odooUID(r *http.Request, cfg OdooConfig) (int, error) {
+	result, err := odooRPC(r, cfg, "common", "authenticate", cfg.Database, cfg.Username, cfg.APIKey, map[string]interface{}{})
+	if err != nil {
+		return 0, err
+	}
+	uid := int(odooNumber(result))
+	if uid <= 0 {
+		return 0, fmt.Errorf("Odoo rechazó las credenciales")
+	}
+	return uid, nil
+}
+
+func odooNumber(v interface{}) float64 {
+	switch value := v.(type) {
+	case float64:
+		return value
+	case float32:
+		return float64(value)
+	case int:
+		return float64(value)
+	case int64:
+		return float64(value)
+	case json.Number:
+		n, _ := value.Float64()
+		return n
+	default:
+		n, _ := strconv.ParseFloat(strings.TrimSpace(fmt.Sprint(v)), 64)
+		return n
+	}
+}
+
+func odooSlice(v interface{}) []interface{} {
+	values, _ := v.([]interface{})
+	return values
+}
+
+func (s *Server) odooStatus(w http.ResponseWriter, r *http.Request) {
+	if _, ok := s.requireAdmin(w, r); !ok {
+		return
+	}
+	if r.Method != http.MethodGet {
+		http.Error(w, "method", http.StatusMethodNotAllowed)
+		return
+	}
+	status := currentOdooConfig().safeStatus()
+	s.mu.RLock()
+	status["sync"] = s.state["odooSync"]
+	s.mu.RUnlock()
+	jsonOut(w, status)
+}
+
+func (s *Server) odooTest(w http.ResponseWriter, r *http.Request) {
+	if _, ok := s.requireAdmin(w, r); !ok {
+		return
+	}
+	if r.Method != http.MethodPost {
+		http.Error(w, "method", http.StatusMethodNotAllowed)
+		return
+	}
+	cfg := currentOdooConfig()
+	if !cfg.ready() {
+		http.Error(w, "Faltan variables IMFOHSA_ODOO_*", http.StatusPreconditionFailed)
+		return
+	}
+	uid, err := odooUID(r, cfg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
+	jsonOut(w, map[string]interface{}{"ok": true, "uid": uid, "database": cfg.Database})
+}
+
+func odooManyName(v interface{}) string {
+	if values, ok := v.([]interface{}); ok && len(values) > 1 {
+		return strings.TrimSpace(fmt.Sprint(values[1]))
+	}
+	return strings.TrimSpace(fmt.Sprint(v))
+}
+
+func odooDate(v interface{}) string {
+	raw := strings.TrimSpace(fmt.Sprint(v))
+	if len(raw) >= 10 {
+		return raw[:10]
+	}
+	return time.Now().Format("2006-01-02")
+}
+
+func odooOrderID(v interface{}) string {
+	return strings.TrimSpace(fmt.Sprint(v))
+}
+
+func (s *Server) odooPull(w http.ResponseWriter, r *http.Request) {
+	if _, ok := s.requireAdmin(w, r); !ok {
+		return
+	}
+	if r.Method != http.MethodPost {
+		http.Error(w, "method", http.StatusMethodNotAllowed)
+		return
+	}
+	cfg := currentOdooConfig()
+	if !cfg.ready() {
+		http.Error(w, "Faltan variables IMFOHSA_ODOO_*", http.StatusPreconditionFailed)
+		return
+	}
+	uid, err := odooUID(r, cfg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
+	domain := []interface{}{[]interface{}{"state", "in", []interface{}{"sale", "done"}}}
+	if since := strings.TrimSpace(r.URL.Query().Get("since")); since != "" {
+		domain = append(domain, []interface{}{"write_date", ">", since})
+	}
+	fields := []interface{}{"id", "name", "partner_id", "partner_shipping_id", "user_id", "amount_total", "date_order", "commitment_date", "write_date", "state"}
+	kwargs := map[string]interface{}{"fields": fields, "limit": 5000, "order": "write_date asc,id asc"}
+	result, err := odooRPC(r, cfg, "object", "execute_kw", cfg.Database, uid, cfg.APIKey, "sale.order", "search_read", []interface{}{domain}, kwargs)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
+	records, _ := result.([]interface{})
+	added, updated := 0, 0
+	lastWrite := ""
+	s.mu.Lock()
+	orders, _ := s.state["orders"].([]interface{})
+	byExternal := map[string]map[string]interface{}{}
+	for _, raw := range orders {
+		if order := mapOf(raw); order != nil {
+			key := strings.TrimSpace(fmt.Sprint(order["odooId"]))
+			if key == "" {
+				key = strings.TrimSpace(fmt.Sprint(order["orderNo"]))
+			}
+			if key != "" {
+				byExternal[key] = order
+			}
+		}
+	}
+	for _, raw := range records {
+		record := mapOf(raw)
+		if record == nil {
+			continue
+		}
+		externalID := odooOrderID(record["id"])
+		orderNo := strings.TrimSpace(fmt.Sprint(record["name"]))
+		order := byExternal[externalID]
+		if order == nil {
+			order = byExternal[orderNo]
+		}
+		if order == nil {
+			order = map[string]interface{}{"id": "odoo-" + externalID, "status": "Pendiente", "cut": "08:00", "source": "Odoo directo"}
+			orders = append(orders, order)
+			added++
+		} else {
+			updated++
+		}
+		order["odooId"] = externalID
+		order["orderNo"] = orderNo
+		order["clientName"] = odooManyName(record["partner_id"])
+		order["address"] = odooManyName(record["partner_shipping_id"])
+		order["vendorName"] = odooManyName(record["user_id"])
+		order["amount"] = odooNumber(record["amount_total"])
+		order["date"] = odooDate(record["commitment_date"])
+		if strings.TrimSpace(fmt.Sprint(record["commitment_date"])) == "false" || strings.TrimSpace(fmt.Sprint(record["commitment_date"])) == "" {
+			order["date"] = odooDate(record["date_order"])
+		}
+		order["odooState"] = record["state"]
+		order["odooWriteDate"] = record["write_date"]
+		order["updatedAt"] = time.Now().Format(time.RFC3339)
+		if write := strings.TrimSpace(fmt.Sprint(record["write_date"])); write > lastWrite {
+			lastWrite = write
+		}
+	}
+	s.state["orders"] = orders
+	s.state["odooSync"] = map[string]interface{}{"lastPullAt": time.Now().Format(time.RFC3339), "lastWriteDate": lastWrite, "added": added, "updated": updated, "error": ""}
+	err = s.saveLocked()
+	s.mu.Unlock()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	jsonOut(w, map[string]interface{}{"ok": true, "received": len(records), "added": added, "updated": updated, "lastWriteDate": lastWrite})
+}
+
+func (s *Server) odooPush(w http.ResponseWriter, r *http.Request) {
+	if _, ok := s.requireAdmin(w, r); !ok {
+		return
+	}
+	if r.Method != http.MethodPost {
+		http.Error(w, "method", http.StatusMethodNotAllowed)
+		return
+	}
+	cfg := currentOdooConfig()
+	if !cfg.ready() || cfg.StatusField == "" {
+		http.Error(w, "Configure IMFOHSA_ODOO_* e IMFOHSA_ODOO_STATUS_FIELD", http.StatusPreconditionFailed)
+		return
+	}
+	var input struct {
+		OrderID string `json:"orderId"`
+	}
+	if bodyJSON(r, &input) != nil || strings.TrimSpace(input.OrderID) == "" {
+		http.Error(w, "orderId requerido", http.StatusBadRequest)
+		return
+	}
+	s.mu.RLock()
+	var selected map[string]interface{}
+	for _, raw := range odooSlice(s.state["orders"]) {
+		order := mapOf(raw)
+		if order != nil && (strings.TrimSpace(fmt.Sprint(order["id"])) == input.OrderID || strings.TrimSpace(fmt.Sprint(order["orderNo"])) == input.OrderID) {
+			selected = order
+			break
+		}
+	}
+	s.mu.RUnlock()
+	if selected == nil || strings.TrimSpace(fmt.Sprint(selected["odooId"])) == "" {
+		http.Error(w, "Pedido sin vínculo odooId", http.StatusNotFound)
+		return
+	}
+	uid, err := odooUID(r, cfg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
+	odooID, _ := strconv.Atoi(strings.TrimSpace(fmt.Sprint(selected["odooId"])))
+	values := map[string]interface{}{cfg.StatusField: strings.TrimSpace(fmt.Sprint(selected["status"]))}
+	result, err := odooRPC(r, cfg, "object", "execute_kw", cfg.Database, uid, cfg.APIKey, "sale.order", "write", []interface{}{[]interface{}{odooID}, values})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
+	jsonOut(w, map[string]interface{}{"ok": true, "result": result, "orderId": input.OrderID})
+}
+
 func (s *Server) importCostsXLSX(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "method", http.StatusMethodNotAllowed)
@@ -3580,9 +3899,14 @@ func (s *Server) publicDriverAction(w http.ResponseWriter, r *http.Request) {
 		routeMessenger["lastGpsLat"], routeMessenger["lastGpsLng"] = lat, lng
 		routeMessenger["lastGpsAccuracy"], routeMessenger["lastGpsAt"] = accuracy, capturedAt
 	}
-	// La ruta real se construye únicamente con posiciones observadas del
-	// mensajero. No se usa la distancia planificada como kilometraje ejecutado.
+	// La copia aprobada trabaja con hitos: inicio, entrega y retorno. Se aceptan
+	// clientes móviles antiguos sin permitir que el rastreo periódico altere el
+	// kilometraje ni la traza auditada.
 	if action == "gpsPing" {
+		jsonOut(w, map[string]interface{}{"ok": true, "ignored": true, "policy": "event_only", "version": s.version})
+		return
+	}
+	if action == "__legacyGpsPingDisabled" {
 		lat, lng := numberValue(q["lat"]), numberValue(q["lng"])
 		accuracy := numberValue(q["accuracy"])
 		if lat < -90 || lat > 90 || lng < -180 || lng > 180 || (lat == 0 && lng == 0) {
@@ -3974,6 +4298,7 @@ func (s *Server) publicDriverAction(w http.ResponseWriter, r *http.Request) {
 					m["routeKmReal"] = kmReal
 					m["routeKmSource"] = "odometer"
 					m["routeElapsedMinutes"] = elapsedMinutes(m["routeStartedAt"], m["routeEndedAt"])
+					appendRouteEvent("cierre_cedi", numberValue(q["eventLat"]), numberValue(q["eventLng"]), numberValue(q["eventAccuracy"]), strings.TrimSpace(fmt.Sprint(q["eventCapturedAt"])))
 					daypart = strings.ToUpper(strings.TrimSpace(fmt.Sprint(q["daypart"])))
 					s.upsertRouteCostLocked(id, routeDate, daypart, kmReal, startKm, endKm)
 					event := map[string]interface{}{"type": "r770_route_session", "date": routeDate, "messengerId": id, "daypart": daypart, "routeAssignedAt": m["routeAssignedAt"], "odometerStart": startKm, "odometerEnd": endKm, "odometerStartPhoto": m["odometerStartPhoto"], "odometerEndPhoto": m["odometerEndPhoto"], "kmReal": kmReal, "kmSource": "odometer", "elapsedMinutes": m["routeElapsedMinutes"], "startedAt": m["routeStartedAt"], "endedAt": m["routeEndedAt"], "delayMinutes": m["routeStartDelayMinutes"], "delayReason": m["routeStartDelayReason"], "delayResponsible": m["routeStartDelayResponsible"], "at": time.Now().Format(time.RFC3339)}

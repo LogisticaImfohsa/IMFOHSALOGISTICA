@@ -5,8 +5,8 @@
 <title>IMFOHSA · R8.29.15 BLOQUEADA</title>
 <script>(()=>{const apply=()=>{document.title='IMFOHSA · R8.29.15 BLOQUEADA';const label=document.querySelector('.login-card>div');if(label&&/LOGÍSTICA IMFOHSA/i.test(label.textContent))label.textContent='LOGÍSTICA IMFOHSA · R8.29.15 · BLOQUEADA'};window.addEventListener('load',apply);const timer=setInterval(apply,100);setTimeout(()=>clearInterval(timer),3000)})()</script>
 <script>window.R8231_HEAD_INLINE='parsed';setTimeout(()=>window.R8231_HEAD_TIMEOUT='ran',100)</script>
-<script>if(new URLSearchParams(location.search).get('request')==='panel')document.documentElement.classList.add('imfohsa-panel-boot')</script>
-<style>.imfohsa-panel-boot body{visibility:hidden}.imfohsa-panel-boot::before{content:'Cargando formulario IMFOHSA…';position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#07111f;color:#fff;font:700 16px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;visibility:visible}</style>
+<script>(function(){const q=new URLSearchParams(location.search),publicRoute=q.get('request')==='panel'||q.has('seller')||q.has('clientUpload')||q.has('driver')||q.has('panel');if(publicRoute)document.documentElement.classList.add('imfohsa-panel-boot');window.__IMFOHSA_PUBLIC_ROUTE__=publicRoute})()</script>
+<style>.imfohsa-panel-boot body{visibility:hidden}.imfohsa-panel-boot::before{content:'Cargando acceso IMFOHSA…';position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#07111f;color:#fff;font:700 16px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;visibility:visible}</style>
 <link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
@@ -186,7 +186,7 @@ body{background:#f3f6fa}
   },true);
 })();
 </script>
-<script defer src="r82915-copy-approved.js?v=82915c29"></script>
+<script defer src="r82915-copy-approved.js?v=82915c31"></script>
 </head>
 <body>
 <div id="root"></div><div id="modalRoot"></div><div class="toastbox" id="toastbox"></div>
@@ -2348,10 +2348,10 @@ function r760AssignStrategy(pending,messengers,c,mode,cut,date){
   let score=totalKm+maxMin/20+viol*100+(mode==='balanced'?0:mode==='distance'?1:mode==='time'?2:3);return {mode,routes:out,totalKm,maxMin,violations:viol,score};
 }
 function r760ProposalHTML(p){let labels={balanced:'Balanceada',distance:'Menor distancia',time:'Menor tiempo',load:'Carga operativa'},selected=sessionStorage.getItem('r785Proposal:'+p.cut)||p.best.mode,detail=x=>x.routes.filter(r=>r.orders.length).map((r,i)=>`<div class="r14-route-proposal"><div class="r14-route-proposal-head"><b>Ruta ${i+1} · ${esc(r.messenger)}</b><span class="pill ${r.late?'status-red':'status-green'}">${r.late?'Revisar retorno':'Dentro objetivo'}</span></div><div class="small">${r.orders.length} pedidos · ${fmt1(r.km)} km · ${minsToText(r.minutes)} · salida ${r.departure} · retorno ${r.eta} / objetivo ${r.returnTarget}</div><div class="small">${r.orders.map((o,j)=>`${j+1}. ${esc(o.orderNo)}`).join(' → ')}</div></div>`).join('');return `<div class="insight"><b>Propuesta todavía no asignada.</b> Seleccione una alternativa para este corte. La carga se equilibra por tiempo y kilómetros marginales, no por igualar artificialmente distancias.</div><div class="r760-alt-grid" data-r785-cut="${esc(p.cut)}">${p.alternatives.map(x=>`<button type="button" class="r760-alt ${x.mode===selected?'best':''}" data-r785-mode="${x.mode}" onclick="r785SelectProposal(this,'${esc(p.cut)}','${x.mode}')"><span>${labels[x.mode]}</span><b>${fmt1(x.totalKm)} km</b><small>${x.violations} retorno(s) fuera objetivo</small><em>${x.mode===selected?'✓ SELECCIONADA':'Seleccionar'}</em></button>`).join('')}</div>${p.alternatives.map(x=>`<div data-r785-detail="${esc(p.cut)}:${x.mode}" class="${x.mode===selected?'':'hidden'}">${detail(x)}</div>`).join('')}`}
-function r785SelectProposal(el,cut,mode){sessionStorage.setItem('r785Proposal:'+cut,mode);document.querySelectorAll(`[data-r785-cut="${CSS.escape(cut)}"] .r760-alt`).forEach(x=>{let on=x.dataset.r785Mode===mode;x.classList.toggle('best',on);x.querySelector('em').textContent=on?'✓ SELECCIONADA':'Seleccionar'});document.querySelectorAll(`[data-r785-detail^="${CSS.escape(cut)}:"]`).forEach(x=>x.classList.toggle('hidden',x.dataset.r785Detail!==cut+':'+mode));toast('Alternativa seleccionada: '+({balanced:'Balanceada',distance:'Menor distancia',time:'Menor tiempo',sla:'Prioridad SLA'}[mode]||mode))}
+function r785SelectProposal(el,cut,mode){sessionStorage.setItem('r785Proposal:'+cut,mode);document.querySelectorAll(`[data-r785-cut="${CSS.escape(cut)}"] .r760-alt`).forEach(x=>{let on=x.dataset.r785Mode===mode;x.classList.toggle('best',on);x.querySelector('em').textContent=on?'✓ SELECCIONADA':'Seleccionar'});document.querySelectorAll(`[data-r785-detail^="${CSS.escape(cut)}:"]`).forEach(x=>x.classList.toggle('hidden',x.dataset.r785Detail!==cut+':'+mode));toast('Alternativa seleccionada: '+({balanced:'Balanceada',distance:'Menor distancia',time:'Menor tiempo',load:'Carga operativa'}[mode]||mode))}
 async function smartAssignRoutes(){
   r760EnsureState();let date=selectedDate(),centerId=sessionStorage.getItem('planCenter')||'cedi16',selectedCut=sessionStorage.getItem('planCut')||'ALL',cuts=selectedCut==='ALL'?(STATE.settings.cuts||[]):[selectedCut],c=center(centerId);if(!r7515CanModifyCenter(centerId))return toast('No puede asignar rutas de este centro','err');let packages=[];
-  for(let cut of cuts){let pending=filteredOrdersFinal(centerId,'ALL',date,cut).filter(o=>!o.messengerId&&!['Entregado','No entregado','Anulado'].includes(o.status)&&r7513HasCoords(o)&&r821OrderReady(o));if(!pending.length)continue;let ms=filteredMessengers(centerId).filter(m=>r760EligibleMessenger(m,cut,date));if(!ms.length){packages.push({cut,error:'No hay mensajeros Ruta disponibles para este corte'});continue}let alts=['balanced','distance','time','sla'].map(mode=>r760AssignStrategy(pending,ms,c,mode,cut,date)).sort((a,b)=>a.score-b.score);packages.push({cut,alternatives:alts,best:alts[0]})}
+  for(let cut of cuts){let pending=filteredOrdersFinal(centerId,'ALL',date,cut).filter(o=>!o.messengerId&&!['Entregado','No entregado','Anulado'].includes(o.status)&&r7513HasCoords(o)&&r821OrderReady(o));if(!pending.length)continue;let ms=filteredMessengers(centerId).filter(m=>r760EligibleMessenger(m,cut,date));if(!ms.length){packages.push({cut,error:'No hay mensajeros Ruta disponibles para este corte'});continue}let alts=['balanced','distance','time','load'].map(mode=>r760AssignStrategy(pending,ms,c,mode,cut,date)).sort((a,b)=>a.score-b.score);packages.push({cut,alternatives:alts,best:alts[0]})}
   let valid=packages.filter(x=>x.best);if(!valid.length)return toast(packages[0]?.error||'No hay pedidos elegibles','err');openModal('Analizar corte y proponer rutas',valid.map(x=>`<h3 style="margin-top:10px">Corte ${x.cut}</h3>${r760ProposalHTML(x)}`).join(''),[{text:'CONFIRMAR MEJOR PROPUESTA',cls:'btn-primary',fn:async()=>{for(let p of valid){for(let r of p.best.routes){r.orders.forEach((src,i)=>{let o=STATE.orders.find(x=>x.id===src.id);if(o){o.messengerId=r.mid;o.status='Asignado';o.routeMode='R8.1 inteligente';o.routePosition=i+1}});let m=person(r.mid);if(m&&r.orders.length){m.routeAssignedAt=new Date().toISOString();m.routeAssignedDate=date;m.routeStatus='Pendiente';m.routeStartedAt='';m.routeEndedAt='';m.returnCediAt='';delete m.activeDaypart}}}routeCache={};r760Record('r760_smart_assignment',{date,centerId,cuts:valid.map(x=>x.cut),orders:valid.reduce((s,p)=>s+p.best.routes.reduce((a,r)=>a+r.orders.length,0),0),alternatives:4});await saveState('Mejor propuesta confirmada y orden guardado');closeModal();renderPlanner()}},{text:'Cancelar · conservar sin asignar',fn:closeModal}])
 }
 
@@ -2565,9 +2565,16 @@ function r760AssignStrategyRoad(pending,messengers,c,mode,cut,date,matrix,index,
   for(let o of sorted){let best=null;for(let m of messengers){let base=routes.get(m.id),cand=r760ConstrainedSequence([...base,o],index,matrix,cut,model),met=r760SeqTimeline(cand,index,matrix,cut,model),win=r8Window(cut),deadline=r7514Minutes(win.return)-r7514Minutes(win.departure);if(s.plannerHardReturn&&met.total>deadline)continue;if(s.plannerHardAppointments&&met.appointmentViolations)continue;let balance=base.length,territory=r8232TerritoryCost(base,o,c),marginalKm=Math.max(0,met.km-r760SeqTimeline(base,index,matrix,cut,model).km),score=met.total+met.km*2+territory;if(mode==='balanced')score+=balance*5+marginalKm*4+territory*1.15;if(mode==='distance')score=met.km*9+balance+territory*1.35;if(mode==='time')score=met.total+balance*2+territory*.85;if(mode==='load')score=met.total+balance*8+marginalKm*5+territory;if(!best||score<best.score)best={m,cand,met,score}}if(!best){unassigned.push({order:o,reason:'Sin capacidad dentro del retorno/ventana'});continue}routes.set(best.m.id,best.cand)}
   let out=[],totalKm=0,maxMin=0,viol=0,slaViol=0,win=r8Window(cut);for(let m of messengers){let seq=routes.get(m.id);if(!seq.length)continue;seq=r760ConstrainedSequence(seq,index,matrix,cut,model);let met=r760SeqTimeline(seq,index,matrix,cut,model),late=r7514Minutes(met.eta)>r7514Minutes(win.return);if(late)viol++;slaViol+=met.slaViolations;out.push({mid:m.id,messenger:m.name,orders:seq,km:met.km,minutes:met.total,eta:met.eta,departure:win.departure,returnTarget:win.return,late,slaViolations:met.slaViolations,appointmentViolations:met.appointmentViolations,source:matrix.source});totalKm+=met.km;maxMin=Math.max(maxMin,met.total)}let territory=r8232PlanTerritoryPenalty(out,c),score=unassigned.length*100000+slaViol*100000+viol*50000+totalKm*2+maxMin+territory.cost;return {mode,routes:out,totalKm,maxMin,violations:viol,slaViolations:slaViol,unassigned,score,crossings:territory.crossings,dispersion:territory.dispersion,source:matrix.source};
 }
+function r829AttachRapidOrders(alternative,rapid,messengers,cut){
+  let win=r8Window(cut),byMid=new Map(alternative.routes.map(r=>[r.mid,r]));
+  for(let m of messengers)if(!byMid.has(m.id)){let r={mid:m.id,messenger:m.name,orders:[],km:0,minutes:0,eta:win.departure,departure:win.departure,returnTarget:win.return,late:false,slaViolations:0,appointmentViolations:0,source:'carga operativa sin coordenadas',unlocatedCount:0};alternative.routes.push(r);byMid.set(m.id,r)}
+  for(let o of rapid){let candidates=[...byMid.values()],r=candidates.sort((a,b)=>(a.minutes+a.orders.length*15)-(b.minutes+b.orders.length*15)||String(a.messenger).localeCompare(String(b.messenger)))[0];if(!r)continue;r.orders.push(o);r.unlocatedCount=Number(r.unlocatedCount||0)+1;r.minutes+=Number(o.serviceMinutes||15);r.eta=r7514TimeAdd(r.departure,r.minutes);r.late=r7514Minutes(r.eta)>r7514Minutes(r.returnTarget)}
+  alternative.routes=alternative.routes.filter(r=>r.orders.length);alternative.maxMin=Math.max(0,...alternative.routes.map(r=>Number(r.minutes||0)));alternative.violations=alternative.routes.filter(r=>r.late).length;alternative.rapidCount=rapid.length;alternative.score=Number(alternative.score||0)+alternative.maxMin;return alternative
+}
+function r829RapidOnlyAlternative(rapid,messengers,cut){return r829AttachRapidOrders({mode:'load',routes:[],totalKm:0,maxMin:0,violations:0,slaViolations:0,unassigned:[],score:0,crossings:0,dispersion:0,source:'carga operativa sin coordenadas'},rapid,messengers,cut)}
 smartAssignRoutes=async function(){
-  r760EnsureState();let date=selectedDate(),centerId=sessionStorage.getItem('planCenter')||'cedi16',selectedCut=sessionStorage.getItem('planCut')||'ALL',cuts=selectedCut==='ALL'?(STATE.settings.cuts||[]):[selectedCut],c=center(centerId);if(!r7515CanModifyCenter(centerId))return toast('No puede asignar rutas de este centro','err');let packages=[];toast('Analizando calles, restricciones, turnos y SLA…');
-  for(let cut of cuts){let visible=filteredOrdersFinal(centerId,'ALL',date,cut).filter(o=>!o.messengerId&&!['Entregado','No entregado','Anulado'].includes(o.status)),pending=visible.filter(o=>r7513HasCoords(o)),rapid=visible.filter(o=>!r7513HasCoords(o)&&r8RapidReleasable(o));if(!pending.length){if(rapid.length)packages.push({cut,rapid,error:'Los pedidos del modo rápido pueden liberarse, pero necesitan coordenadas observadas para entrar al cálculo vial'});continue}let ms=filteredMessengers(centerId).filter(m=>r760EligibleMessenger(m,cut,date));if(!ms.length){packages.push({cut,rapid,error:'No hay mensajeros Ruta disponibles para este corte'});continue}let points=[[Number(c.lat),Number(c.lng)],...pending.map(o=>[Number(o.lat),Number(o.lng)])],matrix=await r8RoadMatrix(points),index=new Map(pending.map((o,i)=>[o.id,i+1])),model=r8LearningModel(),alts=['balanced','distance','time','load'].map(mode=>r760AssignStrategyRoad(pending,ms,c,mode,cut,date,matrix,index,model)).sort((a,b)=>a.score-b.score);packages.push({cut,rapid,alternatives:alts,best:alts[0],matrixSource:matrix.source})}
+  r760EnsureState();let date=selectedDate(),centerId=sessionStorage.getItem('planCenter')||'cedi16',selectedCut=sessionStorage.getItem('planCut')||'ALL',cuts=selectedCut==='ALL'?(STATE.settings.cuts||[]):[selectedCut],c=center(centerId);if(!r7515CanModifyCenter(centerId))return toast('No puede asignar rutas de este centro','err');let packages=[];toast('Analizando carga operativa, calles, restricciones y turnos…');
+  for(let cut of cuts){let visible=filteredOrdersFinal(centerId,'ALL',date,cut).filter(o=>!o.messengerId&&!['Entregado','No entregado','Anulado'].includes(o.status)),pending=visible.filter(o=>r7513HasCoords(o)),rapid=visible.filter(o=>!r7513HasCoords(o)&&r8RapidReleasable(o)),ms=filteredMessengers(centerId).filter(m=>r760EligibleMessenger(m,cut,date));if(!(pending.length||rapid.length))continue;if(!ms.length){packages.push({cut,rapid,error:'No hay mensajeros Ruta disponibles para este corte'});continue}if(!pending.length){let alt=r829RapidOnlyAlternative(rapid,ms,cut);packages.push({cut,rapid,alternatives:[alt],best:alt,matrixSource:'Carga operativa · GPS se observará durante la entrega'});continue}let points=[[Number(c.lat),Number(c.lng)],...pending.map(o=>[Number(o.lat),Number(o.lng)])],matrix=await r8RoadMatrix(points),index=new Map(pending.map((o,i)=>[o.id,i+1])),model=r8LearningModel(),alts=['balanced','distance','time','load'].map(mode=>r829AttachRapidOrders(r760AssignStrategyRoad(pending,ms,c,mode,cut,date,matrix,index,model),rapid,ms,cut)).sort((a,b)=>a.score-b.score);packages.push({cut,rapid,alternatives:alts,best:alts[0],matrixSource:matrix.source})}
   let valid=packages.filter(x=>x.best);if(!valid.length)return toast(packages[0]?.error||'No hay pedidos optimizables','err');openModal('Analizar corte y proponer rutas',valid.map(x=>`<h3 style="margin-top:10px">Corte ${x.cut} · ${esc(x.matrixSource)}</h3>${x.rapid?.length?`<div class="insight"><b>${x.rapid.length} pedido(s) del modo rápido:</b> pueden asignarse y compartirse sin pin, pero no se inventan puntos ni kilómetros para esta propuesta.</div>`:''}${r760ProposalHTML(x)}${x.best.unassigned?.length?`<div class="insight" style="border-color:#edb7aa"><b>${x.best.unassigned.length} sin capacidad:</b> ${x.best.unassigned.map(u=>esc(u.order.orderNo)).join(', ')}</div>`:''}`).join(''),[{text:'CONFIRMAR PROPUESTAS SELECCIONADAS',cls:'btn-primary',fn:async()=>{for(let p of valid){let chosen=p.alternatives.find(x=>x.mode===(sessionStorage.getItem('r785Proposal:'+p.cut)||p.best.mode))||p.best;for(let r of chosen.routes)r.orders.forEach((src,i)=>{let o=STATE.orders.find(x=>x.id===src.id);if(o){o.messengerId=r.mid;o.status='Asignado';o.routeMode=`${R760_ENGINE} · ${p.matrixSource} · ${chosen.mode}`;o.routePosition=i+1}})}routeCache={};r760Record('r760_smart_assignment',{date,centerId,cuts:valid.map(x=>x.cut),selectedModes:Object.fromEntries(valid.map(p=>[p.cut,sessionStorage.getItem('r785Proposal:'+p.cut)||p.best.mode])),alternatives:4,sources:valid.map(x=>x.matrixSource)});await saveState('Propuestas seleccionadas confirmadas con matriz vial y orden persistente');closeModal();renderPlanner()}},{text:'Cancelar · conservar sin asignar',fn:closeModal}]);
 };
 optimizeOne=async function(mid,silent=false){
@@ -3773,11 +3780,13 @@ shareSellerPortal=async function(){
  openModal('Enlace personal para vendedor',`<div class="insight"><b>Sin usuario ni contraseña.</b> Cada vendedor recibe un enlace individual y solo puede consultar sus propios pedidos.</div><div class="field"><label>Vendedor</label><select id="r728Vendor" class="select">${vendors.map(v=>`<option>${esc(v)}</option>`).join('')}</select></div><div id="r728SellerLink" style="margin-top:12px"></div>`,[{text:'Generar enlace',cls:'btn-primary',fn:async()=>{let vendor=$('#r728Vendor').value,box=$('#r728SellerLink');box.innerHTML='<div class="insight">Generando…</div>';try{let r=await api('/api/share/seller?vendor='+encodeURIComponent(vendor)+'&ts='+Date.now());box.innerHTML=`<div class="field"><label>Enlace de ${esc(vendor)}</label><input id="r728SellerURL" class="input" value="${esc(r.url)}" readonly></div><div class="list-actions" style="margin-top:10px"><button class="btn btn-soft" id="r728CopySeller">Copiar</button><a class="btn btn-primary" target="_blank" rel="noopener" href="${esc(r.url)}">Abrir prueba</a></div>`;$('#r728CopySeller').onclick=()=>copyTextSafe(r.url)}catch(e){box.innerHTML='<div class="insight">No se pudo generar: '+esc(e.message||e)+'</div>'}}},{text:'Cerrar',fn:closeModal}]);
 };
 sellerApp=async function(){
+ document.documentElement.classList.remove('imfohsa-panel-boot');
  if(qs.get('view')!=='result'){document.body.innerHTML=`<div class="r728-public"><header><div class="r728-brand">IMFOHSA <small>The EXCELLENCE begins here</small></div><span>Consulta comercial</span></header><main><section class="r728-hero"><div class="r728-icon">📋</div><div class="small">ACCESO PERSONAL DE CONSULTA</div><h1>Pedidos de mis clientes</h1><p>Consulte el estado y la información completa de sus pedidos asignados.</p><button id="r728SellerEnter" class="r728-mainbtn">Consultar mis pedidos</button><div class="small" style="margin-top:18px">Este enlace es personal, de solo lectura y no requiere contraseña.</div></section></main><footer>IMFOHSA · Portal de consulta para vendedores</footer></div>`;ensureUiRoots();$('#r728SellerEnter').onclick=()=>location.href=location.pathname+'?seller=1&view=result&token='+encodeURIComponent(qs.get('token')||'');return}
  document.body.innerHTML=`<div class="mobile-shell"><div class="mobile-top"><div class="small" style="color:#9db9da">LOGÍSTICA IMFOHSA</div><div class="mobile-title" id="r728SellerTitle">Consulta de vendedor</div><p>Acceso personal de solo lectura. Busque por SO, cliente o dirección.</p></div><div class="card section" style="margin-top:12px"><div class="field"><label>Buscar en mis pedidos</label><input id="sellerQ" class="input" placeholder="S329440 o nombre del cliente"></div><button id="sellerSearch" class="btn btn-primary" style="margin-top:10px;width:100%;justify-content:center">Consultar</button><div id="sellerResults" style="margin-top:12px"></div></div></div>`;ensureUiRoots();
  const run=async()=>{let q=$('#sellerQ').value.trim(),box=$('#sellerResults');box.innerHTML='<div class="insight">Consultando…</div>';try{let r=await api('/api/public/seller?token='+encodeURIComponent(qs.get('token')||'')+'&q='+encodeURIComponent(q));$('#r728SellerTitle').textContent='Consulta · '+(r.vendor||'Vendedor');let rows=r.orders||[];box.innerHTML=rows.map(o=>`<div class="card section" style="margin:10px 0"><div style="display:flex;justify-content:space-between;gap:8px"><div><b style="font-size:18px">${esc(o.orderNo)}</b><div class="small">${esc(o.clientName)} · ${esc(o.phone||'Sin teléfono')}</div></div>${badge(o.status)}</div><div class="small" style="margin-top:7px"><b>Dirección:</b> ${esc(o.deliveryAddress||o.address||'—')}</div><div class="insight"><b>${esc(o.operationType||'Gestión')}</b> · ${esc(o.date||'')} · Corte ${esc(o.cut||'—')} · Mensajero: ${esc(o.messenger||'Sin asignar')}</div><div class="formgrid"><div><div class="small">Total / factura</div><b>${r728Money(o.totalAmount||o.amount)}</b></div><div><div class="small">Pago</div><b>${esc(o.paymentStatus||o.paymentTerm||'—')}</b></div><div><div class="small">Almacén</div><b>${esc(o.warehouse||'—')}</b></div><div><div class="small">Entrega estimada</div><b>${esc(o.latestEstimatedAt||o.initialEstimatedAt||o.promise||'—')}</b></div></div><div class="small"><b>Instrucciones:</b> ${esc(o.instructions||'—')}</div><div class="small" style="margin-top:6px"><b>Productos:</b> ${(o.inventoryLines||[]).map(x=>esc((x.code||'')+' '+(x.product||'')+' × '+(x.quantity||0))).join(' · ')||'—'}</div><div class="small" style="margin-top:6px">Evidencias: ${(o.photos||[]).length} · Recibido por: ${esc(o.receivedBy||'—')} ${o.deliveredAt?'· '+esc(new Date(o.deliveredAt).toLocaleString('es-GT')):''}</div></div>`).join('')||'<div class="insight">No se encontraron pedidos para este vendedor.</div>'}catch(e){box.innerHTML='<div class="insight">Enlace inválido o revocado.</div>'}};$('#sellerSearch').onclick=run;$('#sellerQ').onkeydown=e=>{if(e.key==='Enter')run()};run();
 };
 sellerApp=async function(){
+ document.documentElement.classList.remove('imfohsa-panel-boot');
  const token=qs.get('token')||'';
  if(false&&qs.get('view')!=='result'){document.body.innerHTML=`<div class="r728-public"><header><div class="r728-brand">IMFOHSA <small>The EXCELLENCE begins here</small></div><span>Consulta comercial</span></header><main><section class="r728-hero"><div class="r728-icon">📋</div><div class="small">ACCESO PERSONAL DE CONSULTA</div><h1>Pedidos de mis clientes</h1><p>Consulte el estado y la información de sus pedidos asignados.</p><button id="r728SellerEnter" class="r728-mainbtn">Consultar mis pedidos</button><div class="small" style="margin-top:18px">Acceso personal, de solo lectura y sin funciones operativas.</div></section></main><footer>IMFOHSA · Portal de consulta para vendedores</footer></div>`;ensureUiRoots();$('#r728SellerEnter').onclick=()=>location.href=location.pathname+'?seller=1&view=result&token='+encodeURIComponent(token);return}
  document.body.innerHTML=`<div class="r728-seller"><header><div><b>Consulta vendedores</b><span id="r728SellerDateLabel">Consulta comercial de solo lectura</span></div><div class="r728-datebar"><button id="r728PrevDate">‹</button><input type="date" id="r728SellerDate"><button id="r728NextDate">›</button><button id="r728Today">Hoy</button></div></header><main><div class="r728-sellerhead"><div><h1 id="r728SellerName">Consulta vendedores</h1><p>Consulte por fecha y busque por SO, cliente o dirección.</p></div><a href="${esc(location.pathname+'?track=1')}">Consulta de pedidos</a></div><section class="r728-sellercard"><div class="r728-sellersearch"><input id="sellerQ" placeholder="Buscar SO, cliente o dirección"><span id="r728SellerCount">0 resultados</span></div><div id="sellerResults"><div class="insight">Consultando…</div></div></section></main></div>`;ensureUiRoots();
@@ -8751,6 +8760,139 @@ window.R82915I_DRIVER_RETRY=true;
     };
   }
   window.r82915ImportManualCostExcel=openCostExcelImport;
+})();
+</script>
+<script>
+/* R8.29.15 c32: los enlaces compartidos siempre pertenecen al dominio activo. */
+(function(){
+  if(typeof api!=='function') return;
+  const baseApi=api;
+  api=async function(path,options){
+    const result=await baseApi(path,options);
+    const requestPath=String(path||'');
+    const currentOrigin=String(location.origin||'').replace(/\/$/,'');
+    if(!result||!currentOrigin) return result;
+    if(requestPath.startsWith('/api/info')&&location.protocol==='https:'){
+      result.publicUrl=currentOrigin;
+      result.tunnelRunning=true;
+    }
+    if(/^\/api\/share\/(?:seller|panel-request|driver)/.test(requestPath)){
+      let sharePath=String(result.path||'').trim();
+      if(!sharePath&&result.url){
+        try{const parsed=new URL(result.url,location.href);sharePath=parsed.pathname+parsed.search}catch(_e){}
+      }
+      if(sharePath){
+        if(!sharePath.startsWith('/')) sharePath='/'+sharePath;
+        result.url=currentOrigin+sharePath;
+        result.publicUrl=result.url;
+        result.publicReady=true;
+      }
+    }
+    return result;
+  };
+})();
+</script>
+<style>
+.r829-cancelled-item{opacity:.78;border-color:#b42338!important;background:rgba(180,35,56,.06)!important}
+.r829-cancelled-item .r795-row-data{text-decoration:none}
+.r829-item-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.r829-cancel-note{margin-top:10px;padding:10px 12px;border-left:4px solid #b42338;background:rgba(180,35,56,.08);border-radius:8px}
+</style>
+<script>
+/* R8.29.15 c33: anulación transaccional de una sola gestión semanal. */
+(function(){
+  const cancelled=value=>/anulad|cancelad/i.test(String(value||''));
+  async function cancelWeeklyItem(requestId,index,reason){
+    const request=(STATE.panelRequests||[]).find(x=>String(x.id)===String(requestId));
+    const item=request?.weeklyItems?.[index];
+    if(!request||!item)throw new Error('La gestión ya no existe.');
+    if(cancelled(item.status))return;
+    const now=new Date().toISOString(),user=ME?.username||'sistema',assignmentId=String(item.assignmentId||'');
+    item.status='Anulada';item.cancelledAt=now;item.cancelledBy=user;item.cancelReason=reason;
+    delete item.assignedVehicleId;delete item.assignedVehiclePlate;delete item.assignmentId;
+    (STATE.panelAssignments||[]).forEach(a=>{
+      if((assignmentId&&String(a.id)===assignmentId)||(String(a.requestId)===String(requestId)&&Number(a.requestItemIndex)===Number(index))){
+        a.status='Cancelada';a.cancelledAt=now;a.cancelledBy=user;a.cancelReason=reason;a.vehicleId='';a.messengerId='';
+      }
+    });
+    const active=request.weeklyItems.filter(x=>!cancelled(x.status));
+    request.status=active.length?(active.length<request.weeklyItems.length?'Aprobada parcialmente':request.status):'Cancelada';
+    request.updatedAt=now;request.updatedBy=user;
+    request.itemAudit=Array.isArray(request.itemAudit)?request.itemAudit:[];
+    request.itemAudit.push({action:'Gestión anulada',itemIndex:index,reason,at:now,by:user});
+    await saveState(`${request.id} · Gestión ${index+1} anulada`);
+  }
+  async function reactivateWeeklyItem(requestId,index){
+    const request=(STATE.panelRequests||[]).find(x=>String(x.id)===String(requestId));
+    const item=request?.weeklyItems?.[index];if(!request||!item)throw new Error('La gestión ya no existe.');
+    const now=new Date().toISOString(),user=ME?.username||'sistema';
+    item.status='Pendiente de unidad';delete item.cancelledAt;delete item.cancelledBy;delete item.cancelReason;
+    request.status='Aprobada parcialmente';request.updatedAt=now;request.updatedBy=user;
+    request.itemAudit=Array.isArray(request.itemAudit)?request.itemAudit:[];
+    request.itemAudit.push({action:'Gestión reactivada',itemIndex:index,at:now,by:user});
+    await saveState(`${request.id} · Gestión ${index+1} reactivada`);
+  }
+  window.r829CancelWeeklyItem=cancelWeeklyItem;
+
+  if(typeof r795ManageIscWeekly==='function'){
+    const baseManage=r795ManageIscWeekly;
+    r795ManageIscWeekly=function(request){
+      baseManage(request);
+      (request.weeklyItems||[]).forEach((item,index)=>{
+        const row=document.querySelector(`[data-weekly-index="${index}"]`);if(!row)return;
+        const isCancelled=cancelled(item.status),head=row.querySelector('.r795-row-head .pill');
+        if(isCancelled){
+          row.classList.add('r829-cancelled-item');
+          if(head){head.className='pill status-red';head.textContent='Anulada'}
+          row.querySelectorAll('select,[data-r795-save]').forEach(el=>el.disabled=true);
+          const note=document.createElement('div');note.className='r829-cancel-note';note.innerHTML=`<b>Gestión anulada</b><br>${esc(item.cancelReason||'Sin motivo registrado')}<br><small>${esc(item.cancelledBy||'')} · ${esc(String(item.cancelledAt||'').replace('T',' ').slice(0,16))}</small>`;row.appendChild(note);
+        }
+        const actions=document.createElement('div');actions.className='r829-item-actions';
+        const button=document.createElement('button');button.type='button';button.className=isCancelled?'btn':'btn btn-danger';button.textContent=isCancelled?'Reactivar gestión':'Anular gestión';
+        button.onclick=()=>{
+          if(isCancelled){
+            openModal(`Reactivar ${esc(request.id)} · Gestión ${index+1}`,`<div class="insight">La gestión volverá a quedar pendiente de unidad. Las demás gestiones no cambiarán.</div>`,[{text:'Reactivar gestión',cls:'btn-primary',fn:async()=>{try{await reactivateWeeklyItem(request.id,index);await loadState();const saved=(STATE.panelRequests||[]).find(x=>x.id===request.id);toast('Gestión reactivada.','ok');closeModal();r795ManageIscWeekly(saved)}catch(e){toast(e.message,'err')}}},{text:'Cancelar',fn:()=>{closeModal();r795ManageIscWeekly(request)}}]);
+          }else{
+            openModal(`Anular ${esc(request.id)} · Gestión ${index+1}`,`<div class="insight"><b>Solo se anulará esta gestión.</b><br>La unidad quedará liberada y las demás gestiones continuarán vigentes.</div><div class="field" style="margin-top:14px"><label>Motivo de anulación <span>*</span></label><textarea id="r829CancelReason" class="textarea" placeholder="Indique por qué no se realizará esta gestión"></textarea></div>`,[{text:'Confirmar anulación',cls:'btn-danger',fn:async()=>{const reason=$('#r829CancelReason')?.value.trim();if(!reason)return toast('Ingrese el motivo de la anulación.','err');try{await cancelWeeklyItem(request.id,index,reason);await loadState();const saved=(STATE.panelRequests||[]).find(x=>x.id===request.id);toast(`Gestión ${index+1} anulada; las demás continúan vigentes.`,'ok');closeModal();r795ManageIscWeekly(saved)}catch(e){toast(e.message||'No fue posible anular la gestión.','err')}}},{text:'Volver',fn:()=>{closeModal();r795ManageIscWeekly(request)}}]);
+          }
+        };
+        actions.appendChild(button);row.appendChild(actions);
+      });
+      if(typeof r795UpdateProgress==='function')r795UpdateProgress(request);
+    };
+  }
+  if(typeof r795UpdateProgress==='function'){
+    r795UpdateProgress=function(request){
+      const items=Array.isArray(request.weeklyItems)?request.weeklyItems:[],active=items.filter(x=>!cancelled(x.status)),done=active.filter(x=>x.assignedVehicleId).length,cancelledCount=items.length-active.length,e=$('#r795Progress');
+      if(e)e.textContent=`${done}/${active.length} gestiones activas${cancelledCount?` · ${cancelledCount} anulada(s)`:''}`;
+    };
+  }
+  if(typeof r774CalendarEvents==='function'){
+    const baseEvents=r774CalendarEvents;
+    r774CalendarEvents=function(){return baseEvents().filter(event=>{
+      if(cancelled(event.status))return false;
+      if(event.requestId&&event.requestItemIndex!==undefined&&event.requestItemIndex!==null){
+        const request=(STATE.panelRequests||[]).find(x=>String(x.id)===String(event.requestId));
+        if(cancelled(request?.weeklyItems?.[Number(event.requestItemIndex)]?.status))return false;
+      }
+      return true;
+    })};
+  }
+  if(typeof r82218MergeRecord==='function'){
+    const baseMerge=r82218MergeRecord;
+    r82218MergeRecord=function(name,remote,local){
+      const merged=baseMerge(name,remote,local);
+      if(name==='panelRequests'){
+        const remoteItems=Array.isArray(remote?.weeklyItems)?remote.weeklyItems:[];
+        merged.weeklyItems=(merged.weeklyItems||[]).map((item,index)=>{
+          const source=remoteItems[index];
+          if(cancelled(source?.status))return {...item,status:'Anulada',cancelReason:source.cancelReason,cancelledAt:source.cancelledAt,cancelledBy:source.cancelledBy,assignedVehicleId:'',assignedVehiclePlate:'',assignmentId:''};
+          return item;
+        });
+      }
+      return merged;
+    };
+  }
 })();
 </script>
 </body></html>

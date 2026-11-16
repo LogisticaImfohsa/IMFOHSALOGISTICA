@@ -1,0 +1,22 @@
+[Unit]
+Description=Plataforma Logistica IMFOHSA R8.29.15
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=imfohsa
+Group=imfohsa
+WorkingDirectory=/opt/imfohsa
+Environment=IMFOHSA_ROOT=/opt/imfohsa
+Environment=IMFOHSA_PORT=8946
+Environment=IMFOHSA_ENV=production
+EnvironmentFile=-/etc/imfohsa/imfohsa.env
+ExecStart=/opt/imfohsa/IMFOHSA_SERVIDOR
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
