@@ -1,0 +1,10 @@
+IMFOHSA R8.29.16 - Version corregida (2026-11-17)
+
+Base: R8.29.15. Ver CAMBIOS_R8.29.16.md para el detalle de la correccion.
+Solo cambio index.html; IMFOHSA_SERVIDOR.exe es el mismo de R8.29.15
+recompilado desde server_copia_aprobada_8946.go.
+
+data/ y uploads/ se copiaron desde la carpeta en uso
+(IMFOHSA_R8.29.15_PORTABLE_SIN_TUNELES_2026-11-16) al crear esta version.
+
+No ejecute esta version y otra al mismo tiempo: todas usan el puerto 8946.

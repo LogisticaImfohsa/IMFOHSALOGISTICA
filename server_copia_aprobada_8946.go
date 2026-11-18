@@ -1088,11 +1088,39 @@ func (s *Server) ensurePublicBase(maxWait time.Duration) (string, string) {
 	return s.bestBase()
 }
 
+// shareBase genera enlaces portables usando el mismo origen desde el que el
+// usuario abrió la plataforma. Respeta un proxy HTTPS y permite que BI/IT
+// fijen un dominio estable con IMFOHSA_PUBLIC_BASE_URL. Nunca crea túneles.
+func (s *Server) shareBase(r *http.Request) (string, string) {
+	if configured := strings.TrimRight(strings.TrimSpace(os.Getenv("IMFOHSA_PUBLIC_BASE_URL")), "/"); configured != "" {
+		return configured, "configured"
+	}
+	host := strings.TrimSpace(strings.Split(r.Header.Get("X-Forwarded-Host"), ",")[0])
+	if host == "" {
+		host = strings.TrimSpace(r.Host)
+	}
+	if host == "" {
+		return s.bestBase()
+	}
+	proto := strings.TrimSpace(strings.Split(r.Header.Get("X-Forwarded-Proto"), ",")[0])
+	if proto == "" {
+		if r.TLS != nil {
+			proto = "https"
+		} else {
+			proto = "http"
+		}
+	}
+	if proto != "http" && proto != "https" {
+		proto = "http"
+	}
+	return proto + "://" + host, "same-origin"
+}
+
 func (s *Server) shareAdminInfo(w http.ResponseWriter, r *http.Request) {
 	if _, ok := s.requireAdmin(w, r); !ok {
 		return
 	}
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	path := "/index.html"
 	jsonOut(w, map[string]interface{}{
 		"ok": true, "mode": mode, "path": path,
@@ -1118,7 +1146,7 @@ func (s *Server) sharePanelRequestInfo(w http.ResponseWriter, r *http.Request) {
 		_ = s.saveLocked()
 	}
 	s.mu.Unlock()
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	path := "/index.html?request=panel&token=" + url.QueryEscape(pt)
 	jsonOut(w, map[string]interface{}{
 		"ok": true, "mode": mode, "path": path, "token": pt,
@@ -1143,7 +1171,7 @@ func (s *Server) shareClientUploadInfo(w http.ResponseWriter, r *http.Request) {
 		_ = s.saveLocked()
 	}
 	s.mu.Unlock()
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	path := "/index.html?clientUpload=1&token=" + url.QueryEscape(t)
 	jsonOut(w, map[string]interface{}{
 		"ok": true, "mode": mode, "path": path, "token": t,
@@ -1187,7 +1215,7 @@ func (s *Server) shareSellerInfo(w http.ResponseWriter, r *http.Request) {
 	t := strings.TrimSpace(sval(record["token"]))
 	_ = s.saveLocked()
 	s.mu.Unlock()
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	path := "/vendedor/" + url.PathEscape(t)
 	jsonOut(w, map[string]interface{}{"ok": true, "mode": mode, "path": path, "token": t, "vendor": vendor, "url": strings.TrimRight(base, "/") + path, "publicReady": mode == "public"})
 }
@@ -1325,7 +1353,7 @@ func (s *Server) sharePanelInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := strings.TrimSpace(r.URL.Query().Get("id"))
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	s.mu.RLock()
 	var found map[string]interface{}
 	if arr, ok := s.state["panelAssignments"].([]interface{}); ok {
@@ -1425,7 +1453,7 @@ func (s *Server) shareDriverInfo(w http.ResponseWriter, r *http.Request) {
 			base, mode = fmt.Sprintf("http://localhost:%d", port), "local"
 		}
 	} else {
-		base, mode = s.ensurePublicBase(40 * time.Second)
+		base, mode = s.shareBase(r)
 	}
 	path := fmt.Sprintf("/index.html?driver=%s&token=%s&date=%s",
 		url.QueryEscape(mid), url.QueryEscape(accessToken), url.QueryEscape(date))
@@ -1582,7 +1610,7 @@ func (s *Server) shareRoutePage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Mensajero no encontrado", 404)
 		return
 	}
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	link := fmt.Sprintf("%s/index.html?driver=%s&token=%s&date=%s", strings.TrimRight(base, "/"), url.QueryEscape(mid), url.QueryEscape(tok), url.QueryEscape(date))
 	status := `<span class="ok"><b>✅ Ruta HTTPS verificada y lista para compartir.</b></span>`
 	if mode != "public" {
@@ -1616,7 +1644,7 @@ func (s *Server) sharePanelRequestPage(w http.ResponseWriter, r *http.Request) {
 		_ = s.saveLocked()
 	}
 	s.mu.Unlock()
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	link := strings.TrimRight(base, "/") + "/index.html?request=panel&token=" + url.QueryEscape(pt)
 	status := `<span class="ok"><b>✅ Formulario HTTPS verificado y listo.</b></span>`
 	if mode != "public" {
@@ -1682,7 +1710,7 @@ func (s *Server) captureCreate(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	s.captures[id] = cs
 	s.mu.Unlock()
-	base, mode := s.ensurePublicBase(40 * time.Second)
+	base, mode := s.shareBase(r)
 	path := "/captura?session=" + url.QueryEscape(id)
 	jsonOut(w, map[string]interface{}{"ok": true, "id": id, "token": id, "path": path, "url": strings.TrimRight(base, "/") + path, "mode": mode, "publicReady": mode == "public", "expiresMinutes": 120})
 }
@@ -4927,7 +4955,7 @@ func verifySHA256(path, expected string) error {
 }
 
 func download(u, path string) error {
-	cli := &http.Client{Timeout: 3 * time.Minute}
+	cli := &http.Client{Timeout: 15 * time.Minute}
 	req, _ := http.NewRequest("GET", u, nil)
 	req.Header.Set("User-Agent", "Mozilla/5.0 IMFOHSA")
 	resp, err := cli.Do(req)

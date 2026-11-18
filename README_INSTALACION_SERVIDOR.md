@@ -3,6 +3,19 @@
 Esta carpeta es una sola aplicación. El ejecutable, `index.html`, `data/`,
 `uploads/`, `vendor/` y `site-assets/` deben permanecer juntos.
 
+## Enlaces portables
+
+Los enlaces de pilotos, vendedores y solicitud de vehículo se construyen con
+el mismo origen desde el cual el usuario abrió la plataforma. No contienen
+dominios temporales de Cloudflare ni direcciones IP fijas.
+
+- En red local: `http://IP-DEL-SERVIDOR:8946`
+- En producción: el dominio HTTPS configurado por BI/IT.
+
+Por esta razón, BI/IT debe publicar toda la aplicación detrás de un único
+dominio o proxy inverso y conservar las rutas `/api`, `/vendedor` e
+`/index.html` en el mismo origen.
+
 ## Windows
 
 1. Extraiga la ZIP completa en una carpeta definitiva.

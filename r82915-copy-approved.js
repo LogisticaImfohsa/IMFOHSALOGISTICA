@@ -32,9 +32,9 @@ function actualMetrics(){document.querySelectorAll('.r765-route-card[data-mid]')
 function startMessengerGps(){return null}
 function removePlannerOverlayTitle(){document.querySelectorAll('#planMap *,.planner-map *').forEach(x=>{if(x.children.length===0&&x.textContent.trim()==='Pedidos y rutas')x.closest('div')?.remove()})}
 function clearMode(){const shell=q('#appShell');if(!shell)return;document.documentElement.dataset.imfTheme='light';localStorage.setItem('imfTheme','light');document.body.classList.add('imf-clear-copy');document.body.classList.toggle('imf-module-planner',typeof CURRENT!=='undefined'&&CURRENT==='planner');q('#imfThemeToggle')?.remove()}
-function approvedAccess(){if(q('#appShell')||q('.imf-access-shell'))return;const oldButton=q('#loginBtn'),oldClick=oldButton?.onclick,oldKey=q('#lp')?.onkeydown;document.body.className='imf-approved-access';document.body.innerHTML=`<main class="imf-access-shell" aria-label="Acceso administrativo"><section class="imf-access-hero"><div class="imf-access-brand"><img src="site-assets/site-01.png" alt="IMFOHSA · The EXCELLENCE begins here"><h2>Plataforma Logística Integral</h2><p>Personas <b>•</b> Procesos <b>•</b> Entregas <b>•</b> Resultados</p></div></section><section class="imf-access-panel"><div class="imf-online"><span></span>Servidor en línea</div><div class="imf-access-card"><div class="imf-shield" aria-hidden="true">♙</div><h1>Acceso administrativo</h1><label for="lu">Usuario</label><div class="imf-access-input"><span aria-hidden="true">♙</span><input id="lu" autocomplete="username" placeholder="Usuario"></div><label for="lp">Contraseña</label><div class="imf-access-input"><span aria-hidden="true">♙</span><input id="lp" type="password" autocomplete="current-password" placeholder="Contraseña"><button type="button" id="imfPasswordToggle" aria-label="Mostrar contraseña">◉</button></div><button class="imf-access-submit" id="loginBtn">Ingresar <span>→</span></button><button class="imf-forgot" type="button" id="imfForgot">¿Olvidaste tu contraseña?</button></div></section></main>`;if(typeof ensureUiRoots==='function')ensureUiRoots();const button=q('#loginBtn'),password=q('#lp');button.onclick=async()=>{const origText=button.innerHTML;button.disabled=true;button.innerHTML='Ingresando… <span>⏳</span>';try{ME=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:q('#lu').value.trim(),password:password.value})});button.innerHTML='Cargando datos… <span>⏳</span>';await loadState();await prepareOperationalDay();sessionStorage.setItem('globalDate',localISODate());adminApp();startRealtime();if(typeof setupMobileUi==='function')setupMobileUi()}catch(e){button.disabled=false;button.innerHTML=origText;toast('Credenciales incorrectas o error de conexión','err')}};password.onkeydown=typeof oldKey==='function'?oldKey:e=>{if(e.key==='Enter')button.click()};q('#imfPasswordToggle').onclick=()=>{const show=password.type==='password';password.type=show?'text':'password';q('#imfPasswordToggle').textContent=show?'◌':'◉';q('#imfPasswordToggle').setAttribute('aria-label',show?'Ocultar contraseña':'Mostrar contraseña')};q('#imfForgot').onclick=()=>toast('Solicite el restablecimiento al administrador de la plataforma.','ok')}
+function approvedAccess(){if(q('#appShell')||q('.imf-access-shell'))return;const oldButton=q('#loginBtn'),oldClick=oldButton?.onclick,oldKey=q('#lp')?.onkeydown;document.body.className='imf-approved-access';document.body.innerHTML=`<main class="imf-access-shell" aria-label="Acceso administrativo"><section class="imf-access-hero"><div class="imf-access-brand"><img src="site-assets/site-01.png" alt="IMFOHSA · The EXCELLENCE begins here"><h2>Plataforma Logística Integral</h2><p>Personas <b>•</b> Procesos <b>•</b> Entregas <b>•</b> Resultados</p></div></section><section class="imf-access-panel"><div class="imf-online"><span></span>Servidor en línea</div><div class="imf-access-card"><div class="imf-shield" aria-hidden="true">♙</div><h1>Acceso administrativo</h1><label for="lu">Usuario</label><div class="imf-access-input"><span aria-hidden="true">♙</span><input id="lu" autocomplete="username" placeholder="Usuario"></div><label for="lp">Contraseña</label><div class="imf-access-input"><span aria-hidden="true">♙</span><input id="lp" type="password" autocomplete="current-password" placeholder="Contraseña"><button type="button" id="imfPasswordToggle" aria-label="Mostrar contraseña">◉</button></div><button class="imf-access-submit" id="loginBtn">Ingresar <span>→</span></button><button class="imf-forgot" type="button" id="imfForgot">¿Olvidaste tu contraseña?</button></div></section></main>`;if(typeof ensureUiRoots==='function')ensureUiRoots();const button=q('#loginBtn'),password=q('#lp');button.onclick=async()=>{const origText=button.innerHTML;button.disabled=true;button.innerHTML='Ingresando… <span>⏳</span>';try{ME=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:q('#lu').value.trim(),password:password.value})});button.innerHTML='Cargando datos… <span>⏳</span>';await loadState();await prepareOperationalDay();sessionStorage.setItem('globalDate',localISODate());adminApp();startRealtime()}catch(e){button.disabled=false;button.innerHTML=origText;toast('Credenciales incorrectas o error de conexión','err')}};password.onkeydown=typeof oldKey==='function'?oldKey:e=>{if(e.key==='Enter')button.click()};q('#imfPasswordToggle').onclick=()=>{const show=password.type==='password';password.type=show?'text':'password';q('#imfPasswordToggle').textContent=show?'◌':'◉';q('#imfPasswordToggle').setAttribute('aria-label',show?'Ocultar contraseña':'Mostrar contraseña')};q('#imfForgot').onclick=()=>toast('Solicite el restablecimiento al administrador de la plataforma.','ok')}
 window.r82915ApprovedAccess=approvedAccess;
-function install(){if(window.__IMF_COPY_APPROVED)return;window.__IMF_COPY_APPROVED=true;const login=window.loginPage;if(typeof login==='function')window.loginPage=function(){const out=login();approvedAccess();return out};approvedAccess();clearMode();if(typeof r813Buckets==='function')window.r813Buckets=buckets;const syncBase=window.r712SyncOne;if(typeof syncBase==='function')window.r712SyncOne=function(o){const m=syncBase(o);if(rapidOrder(o)){const hasGeo=o.geoValidated===true&&Number.isFinite(Number(o.lat))&&Number.isFinite(Number(o.lng));o.releaseApproved=true;o.releaseToPlanner=true;o.addressReviewRequired=false;o.geoObservedPending=!hasGeo;o.releaseBlocks=(o.releaseBlocks||[]).filter(x=>!/ubicaci[oó]n|punto|mapa/i.test(String(x)));if(m){m.status='ready';m.releaseApproved=true;m.geo=m.geo||{};m.geo.observedPending=!hasGeo;m.geo.validationMode='observed_delivery'}}return m};const publishBase=window.r773PublishRoute;if(typeof publishBase==='function')window.r773PublishRoute=mid=>publishRouteWithRapidMode(mid,publishBase);const shareBase=window.shareDriver;if(typeof shareBase==='function')window.shareDriver=mid=>publishRouteWithRapidMode(mid,shareBase);if(typeof window.r773UnassignManagement==='function')window.r773UnassignManagement=unassignManagementAtomic;const dash=window.r813Dashboard;if(typeof dash==='function')window.r813Dashboard=function(){const out=dash();enhanceDashboard();return out};const resources=window.r810EnhanceResources;if(typeof resources==='function')window.r810EnhanceResources=function(shell,left){const out=resources(shell,left);routesOnly(shell);return out};const planner=window.renderPlanner;if(typeof planner==='function')window.renderPlanner=function(){const out=planner();addImport();setTimeout(()=>{addImport();routesOnly(q('.planner-shell'))},80);return out};const page=window.renderPage;if(typeof page==='function')window.renderPage=function(...args){const out=page.apply(this,args);clearMode();if(CURRENT==='dashboard')enhanceDashboard();if(CURRENT==='planner')addImport();if(typeof setupMobileUi==='function')setupMobileUi();return out};setTimeout(()=>{approvedAccess();clearMode();if(!q('#appShell'))return;if(typeof CURRENT!=='undefined'&&CURRENT==='dashboard'&&typeof r813Dashboard==='function')r813Dashboard();if(typeof CURRENT!=='undefined'&&CURRENT==='planner'&&typeof renderPlanner==='function')renderPlanner();if(typeof setupMobileUi==='function')setupMobileUi()},0)}
+function install(){if(window.__IMF_COPY_APPROVED)return;window.__IMF_COPY_APPROVED=true;const login=window.loginPage;if(typeof login==='function')window.loginPage=function(){const out=login();approvedAccess();return out};approvedAccess();clearMode();if(typeof r813Buckets==='function')window.r813Buckets=buckets;const syncBase=window.r712SyncOne;if(typeof syncBase==='function')window.r712SyncOne=function(o){const m=syncBase(o);if(rapidOrder(o)){const hasGeo=o.geoValidated===true&&Number.isFinite(Number(o.lat))&&Number.isFinite(Number(o.lng));o.releaseApproved=true;o.releaseToPlanner=true;o.addressReviewRequired=false;o.geoObservedPending=!hasGeo;o.releaseBlocks=(o.releaseBlocks||[]).filter(x=>!/ubicaci[oó]n|punto|mapa/i.test(String(x)));if(m){m.status='ready';m.releaseApproved=true;m.geo=m.geo||{};m.geo.observedPending=!hasGeo;m.geo.validationMode='observed_delivery'}}return m};const publishBase=window.r773PublishRoute;if(typeof publishBase==='function')window.r773PublishRoute=mid=>publishRouteWithRapidMode(mid,publishBase);const shareBase=window.shareDriver;if(typeof shareBase==='function')window.shareDriver=mid=>publishRouteWithRapidMode(mid,shareBase);if(typeof window.r773UnassignManagement==='function')window.r773UnassignManagement=unassignManagementAtomic;const dash=window.r813Dashboard;if(typeof dash==='function')window.r813Dashboard=function(){const out=dash();enhanceDashboard();return out};const resources=window.r810EnhanceResources;if(typeof resources==='function')window.r810EnhanceResources=function(shell,left){const out=resources(shell,left);routesOnly(shell);return out};const planner=window.renderPlanner;if(typeof planner==='function')window.renderPlanner=function(){const out=planner();addImport();setTimeout(()=>{addImport();routesOnly(q('.planner-shell'))},80);return out};const page=window.renderPage;if(typeof page==='function')window.renderPage=function(...args){const out=page.apply(this,args);clearMode();if(CURRENT==='dashboard')enhanceDashboard();if(CURRENT==='planner')addImport();return out};setTimeout(()=>{approvedAccess();clearMode();if(!q('#appShell'))return;if(typeof CURRENT!=='undefined'&&CURRENT==='dashboard'&&typeof r813Dashboard==='function')r813Dashboard();if(typeof CURRENT!=='undefined'&&CURRENT==='planner'&&typeof renderPlanner==='function')renderPlanner()},0)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 /* El botón histórico "Quitar de la ruta" llama unassignStop, mientras que el
    menú moderno llama r773UnassignManagement. Se unifican para que ninguno
@@ -306,73 +306,3 @@ window.__imfClearManagementAssignment=clearManagementAssignment;
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,0),{once:true});else setTimeout(boot,0);
 })();
-
-
-function setupMobileUi(){
-  const shell=q('#appShell');
-  if(!shell)return;
-  const topbar=q('.topbar');
-  if(topbar&&!q('#imfMobileMenuBtn')){
-    const burger=document.createElement('button');
-    burger.id='imfMobileMenuBtn';
-    burger.className='imf-mobile-menu-btn';
-    burger.setAttribute('aria-label','Abrir menú');
-    burger.innerHTML='<span style="font-size:18px;line-height:1">☰</span><span>Menú</span>';
-    const leftBox=topbar.firstElementChild||topbar;
-    if(leftBox!==topbar){leftBox.style.display='flex';leftBox.style.alignItems='center';leftBox.style.gap='10px';leftBox.insertBefore(burger,leftBox.firstChild)}
-    else{topbar.insertBefore(burger,topbar.firstChild)}
-  }
-  let backdrop=q('.imf-sidebar-backdrop');
-  if(!backdrop){
-    backdrop=document.createElement('div');
-    backdrop.className='imf-sidebar-backdrop';
-    document.body.appendChild(backdrop);
-  }
-  const sidebar=q('.sidebar');
-  const closeDrawer=()=>{if(sidebar)sidebar.classList.remove('mobile-open');if(backdrop)backdrop.classList.remove('active');document.body.style.overflow=''};
-  const openDrawer=()=>{if(sidebar)sidebar.classList.add('mobile-open');if(backdrop)backdrop.classList.add('active');document.body.style.overflow='hidden'};
-  const toggleDrawer=()=>{if(!sidebar)return;if(sidebar.classList.contains('mobile-open'))closeDrawer();else openDrawer()};
-  if(sidebar&&!q('.imf-sidebar-close',sidebar)){
-    const brand=q('.brand',sidebar);
-    if(brand){
-      brand.style.display='flex';
-      brand.style.justifyContent='space-between';
-      brand.style.alignItems='flex-start';
-      const cBtn=document.createElement('button');
-      cBtn.className='imf-sidebar-close';
-      cBtn.setAttribute('aria-label','Cerrar menú');
-      cBtn.innerHTML='✕';
-      cBtn.onclick=closeDrawer;
-      brand.appendChild(cBtn);
-    }
-    qa('.navbtn',sidebar).forEach(btn=>{btn.addEventListener('click',closeDrawer)});
-  }
-  const bBtn=q('#imfMobileMenuBtn');
-  if(bBtn)bBtn.onclick=toggleDrawer;
-  backdrop.onclick=closeDrawer;
-
-  let bNav=q('.imf-bottom-nav');
-  if(!bNav){
-    bNav=document.createElement('nav');
-    bNav.className='imf-bottom-nav';
-    bNav.innerHTML=`<button class="imf-bnav-btn" data-target="dashboard" aria-label="Dashboard"><span class="imf-bnav-icon">▦</span><span class="imf-bnav-txt">Inicio</span></button><button class="imf-bnav-btn" data-target="planner" aria-label="Planificador"><span class="imf-bnav-icon">⌖</span><span class="imf-bnav-txt">Rutas</span></button><button class="imf-bnav-btn" data-target="orders" aria-label="Pedidos"><span class="imf-bnav-icon">▤</span><span class="imf-bnav-txt">Pedidos</span></button><button class="imf-bnav-btn" data-target="messengers" aria-label="Pilotos"><span class="imf-bnav-icon">♟</span><span class="imf-bnav-txt">Pilotos</span></button><button class="imf-bnav-btn" id="imfBnavMore" aria-label="Más opciones"><span class="imf-bnav-icon">☰</span><span class="imf-bnav-txt">Más</span></button>`;
-    document.body.appendChild(bNav);
-    qa('.imf-bnav-btn[data-target]',bNav).forEach(btn=>{
-      btn.onclick=()=>{
-        const target=btn.getAttribute('data-target');
-        const sBtn=q(`.navbtn[data-page="${target}"]`);
-        if(sBtn)sBtn.click();
-        else if(typeof renderPage==='function')renderPage(target);
-        updateBNav(target);
-      };
-    });
-    const mBtn=q('#imfBnavMore',bNav);
-    if(mBtn)mBtn.onclick=toggleDrawer;
-  }
-  const updateBNav=(cur)=>{
-    const curP=cur||(typeof CURRENT!=='undefined'?CURRENT:'dashboard');
-    qa('.imf-bnav-btn',bNav).forEach(b=>{if(b.getAttribute('data-target')===curP)b.classList.add('active');else b.classList.remove('active')});
-  };
-  updateBNav();
-}
-window.setupMobileUi=setupMobileUi;
